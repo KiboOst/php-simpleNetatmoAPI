@@ -29,7 +29,7 @@ All function return a json array, you can echo it to get the data you want.
 
 require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoPresence.php");
 
-//get your connection variable from other file or write them, and initilize:
+//get your connection variable from other file or write them, and initiliaze:
 require($_SERVER['DOCUMENT_ROOT']."/path/to/myloginfile.php");
 $_Presence = new NetatmoPresence($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret);
 
