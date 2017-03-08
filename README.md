@@ -22,28 +22,23 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 
 ##How-to
 
-1. Put splNetatmoConf.php and splNetatmoPresence.php in a folder on your server.
-2. Edit splNetatmoConf.php and fill your login, password, application client_id and client_secret
-3. Start getting your datas!
-
-(You only need one connection call at beginning of your script)
+All function return a json array, you can echo it to get the data you want.
 
 ```
 <?php
 
-require($_SERVER['DOCUMENT_ROOT']."/scripts/functions/splNetatmoPresence.php");
+require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoPresence.php");
 
-//connect to Netatmo servers:
-$NPconnection = NP_connection();
+//get your connection variable from other file or write them, and initilize:
+require($_SERVER['DOCUMENT_ROOT']."/path/to/myloginfile.php");
+$_Presence = new NetatmoPresence($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret);
 
 //get all datas from camera(s), containing last 10 events:
-$NPDatas = NP_getDatas($NPconnection, 10);
-//show all readable infos if you want:
-$infos = json_encode($NPDatas, JSON_PRETTY_PRINT);
-echo "<pre>".$infos."</pre><br>";
+//$datas = $_Presence->getDatas(10);
+//echo "<pre>".json_encode($datas, JSON_PRETTY_PRINT)."</pre><br>";
 
 //get infos for all cameras:
-$myCameras = NP_getCameras($NPDatas);
+$myCameras = $_Presence->getCameras();
 for($i=0; $i<count($myCameras); $i++)
 	{
 		$thisCam = $myCameras[$i];
@@ -51,8 +46,6 @@ for($i=0; $i<count($myCameras); $i++)
 		echo "id: ".$thisCam['id']."<br>";
 		echo "vpn url:<br><a href=\"".$thisCam['vpn']."\">".$thisCam['vpn']."</a>";
 		echo "<br>snapshot url:<br><a href=\"".$thisCam['snapshot']."\">".$thisCam['snapshot']."</a><br>";
-		//echo "vpn url: ".$thisCam['vpn']."<br>";
-		//echo "snapshot url: ".$thisCam['snapshot']."<br>";
 		echo "status: ".$thisCam['status']."<br>";
 		echo "sd_status: ".$thisCam['sd_status']."<br>";
 		echo "alim_status: ".$thisCam['alim_status']."<br>";
@@ -62,10 +55,11 @@ for($i=0; $i<count($myCameras); $i++)
 
 //show snapshot:
 $snapshot = $myCameras[0]['snapshot'];
-echo "<br><img src=\"$snapshot\" width=\"350\" height=\"219\">";
+//echo "<br><img src=\"$snapshot\" width=\"350\" height=\"219\">";
 
 //get 10 last event of defined type as array of [title, snapshotURL, vignetteURL]
-$lastEvents = NP_getEvents($NPDatas, 'All', 10); //can request 'human', 'animal', 'vehicle', 'movement', 'All'
+//if you have modified or deleted some event in the Netatmo app, these won't show the snapshot/vignette
+$lastEvents = $_Presence->getEvents('All', 10); //can request 'human', 'animal', 'vehicle', 'movement', 'All'
 for($i=0; $i<count($lastEvents); $i++)
 	{
 		$thisEvent = $lastEvents[$i];
@@ -84,21 +78,25 @@ Support setting/dropping webhooks:
 <?php
 //set webhook:
 $endpoint = 'http://www.mydomain.com/myscripts/myPresenceWebhook.php';
-$answer = NP_setWebhook($NPconnection, $endpoint);
+$answer = $_Presence->setWebhook($endpoint);
 print_r($answer);
 
 //drop webhook:
-NP_dropWebhook($NPconnection);
+$_Presence->dropWebhook();
+
 ```
 
 ##Changes
+
+####v2017.2.0 (2017-03-08)
+- Code breaking: all now is in a php class to avoid variable mess with your own script.
 
 ####v2017.1.0 (2017-03-07)
 - First public version.
 
 ##ToDo
 
-Waiting for Netatmo SDK about to write_presence scope to be able to change settings on cameras!
+Waiting for Netatmo SDK write_presence scope to be able to change settings on cameras!
 
 ##License
 
