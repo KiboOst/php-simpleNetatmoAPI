@@ -24,7 +24,7 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 
 All function return a json array, you can echo it to get the data you want.
 
-```
+```php
 <?php
 
 require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoPresence.php");
