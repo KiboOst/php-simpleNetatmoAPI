@@ -1,6 +1,6 @@
-#php-simpleNetatmoPresence
+# php-simpleNetatmoPresence
 
-##Simple php functions to get datas from your Netatmo Presence cameras
+## Simple php functions to get datas from your Netatmo Presence cameras
 (C) 2017, KiboOst
 
 Need a simple way to get your Netatmo Presence datas with a few lines of php? Here you are!
@@ -9,7 +9,7 @@ No need for official Netatmo SDK or any other ressources!
 
 Feel free to submit an issue or pull request to add more.
 
-##Requirements
+## Requirements
 
 - A Netatmo Weather Station and eventually additionnal modules.
 - Your Netatmo login and password.
@@ -20,7 +20,7 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 - After successfully created your app, just get client_id and client_secret
 
 
-##How-to
+## How-to
 
 All function return a json array, you can echo it to get the data you want.
 
@@ -86,19 +86,19 @@ $_Presence->dropWebhook();
 
 ```
 
-##Changes
+## Changes
 
-####v2017.2.0 (2017-03-08)
+#### v2017.2.0 (2017-03-08)
 - Code breaking: all now is in a php class to avoid variable mess with your own script.
 
-####v2017.1.0 (2017-03-07)
+#### v2017.1.0 (2017-03-07)
 - First public version.
 
-##ToDo
+## ToDo
 
 Waiting for Netatmo SDK write_presence scope to be able to change settings on cameras!
 
-##License
+## License
 
 The MIT License (MIT)
 
