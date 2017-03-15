@@ -142,7 +142,8 @@ class NetatmoPresence {
 					}
 				}
 
-			$eventList = $thisEvent["event_list"];
+			if ( isset($thisEvent["event_list"]) ) $eventList = $thisEvent["event_list"];
+			else continue;
 			$isAvailable = $thisEvent["video_status"];
 			if ($isAvailable == "available")
 				{
