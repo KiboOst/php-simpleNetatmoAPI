@@ -5,6 +5,8 @@
 
 Need a simple way to get your Netatmo Presence datas with a few lines of php? Here you are!
 
+If you need a fully feature custome API to change your camera settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI Anyway, as it doesn't realy on official Netatmo API (which doesn't provide editing camera settings), it can't set/drop webhooks.
+
 No need for official Netatmo SDK or any other ressources!
 
 Feel free to submit an issue or pull request to add more.
