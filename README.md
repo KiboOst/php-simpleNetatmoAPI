@@ -25,8 +25,6 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 All function return a json array, you can echo it to get the data you want.
 
 ```php
-<?php
-
 require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoPresence.php");
 
 //get your connection variable from other file or write them, and initiliaze:
@@ -39,19 +37,18 @@ $_Presence = new NetatmoPresence($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, 
 
 //get infos for all cameras:
 $myCameras = $_Presence->getCameras();
-for($i=0; $i<count($myCameras); $i++)
-	{
-		$thisCam = $myCameras[$i];
-		echo "name: ".$thisCam['name']."<br>";
-		echo "id: ".$thisCam['id']."<br>";
-		echo "vpn url:<br><a href=\"".$thisCam['vpn']."\">".$thisCam['vpn']."</a>";
-		echo "<br>snapshot url:<br><a href=\"".$thisCam['snapshot']."\">".$thisCam['snapshot']."</a><br>";
-		echo "status: ".$thisCam['status']."<br>";
-		echo "sd_status: ".$thisCam['sd_status']."<br>";
-		echo "alim_status: ".$thisCam['alim_status']."<br>";
-		echo "light_mode_status: ".$thisCam['light_mode_status']."<br>";
-		echo "<br>";
-	}
+foreach ($myCameras as $thisCam)
+{
+	echo "name: ".$thisCam['name']."<br>";
+	echo "id: ".$thisCam['id']."<br>";
+	echo "vpn url:<br><a href=\"".$thisCam['vpn']."\">".$thisCam['vpn']."</a>";
+	echo "<br>snapshot url:<br><a href=\"".$thisCam['snapshot']."\">".$thisCam['snapshot']."</a><br>";
+	echo "status: ".$thisCam['status']."<br>";
+	echo "sd_status: ".$thisCam['sd_status']."<br>";
+	echo "alim_status: ".$thisCam['alim_status']."<br>";
+	echo "light_mode_status: ".$thisCam['light_mode_status']."<br>";
+	echo "<br>";
+}
 
 //show snapshot:
 $snapshot = $myCameras[0]['snapshot'];
@@ -60,22 +57,19 @@ $snapshot = $myCameras[0]['snapshot'];
 //get 10 last event of defined type as array of [title, snapshotURL, vignetteURL]
 //if you have modified or deleted some event in the Netatmo app, these won't show the snapshot/vignette
 $lastEvents = $_Presence->getEvents('All', 10); //can request 'human', 'animal', 'vehicle', 'movement', 'All'
-for($i=0; $i<count($lastEvents); $i++)
+foreach ($lastEvents as $thisEvent)
 	{
-		$thisEvent = $lastEvents[$i];
 		echo $thisEvent['title']."<br>";
 		echo $thisEvent['snapshotURL']."<br>";
 		echo $thisEvent['vignetteURL']."<br>";
 		$var = $thisEvent['vignetteURL'];
 		echo "<br><img src=\"$var\" width=\"80\" height=\"80\">";
 	}
-
-?>
 ```
 
 Support setting/dropping webhooks:
-```
-<?php
+
+```php
 //set webhook:
 $endpoint = 'http://www.mydomain.com/myscripts/myPresenceWebhook.php';
 $answer = $_Presence->setWebhook($endpoint);
