@@ -1,22 +1,28 @@
-# php-simpleNetatmoPresence
+# php-simpleNetatmoAPI
 
-## Simple php functions to get datas from your Netatmo Presence cameras
+## Simple php functions to get data from your Netatmo devices
 (C) 2017, KiboOst
 
-Need a simple way to get your Netatmo Presence datas with a few lines of php? Here you are!
+## Supported devices
 
-If you need a fully feature custome API to change your camera settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI Anyway, as it doesn't realy on official Netatmo API (which doesn't provide editing camera settings), it can't set/drop webhooks.
+- Netatmo Weather Station
+- Netatmo Presence Cameras
 
-No need for official Netatmo SDK or any other ressources!
+This is a simple stand-alone API to get your Netatmo devices data.
 
-Feel free to submit an issue or pull request to add more.
+No need for official Netatmo SDK or any other resources.
+
+If you need a fully feature custom API to change your Presence cameras settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI Anyway, as it doesn't rely on official Netatmo API (which doesn't provide editing camera settings), it can't set/drop webhooks.
+
+Feel free to submit an issue or pull request to add more (*Wellcome*, *Homecoach* and *Thermostat* support by someone having these could be great).
 
 ## Requirements
 
-- A Netatmo Weather Station and eventually additionnal modules.
 - Your Netatmo login and password.
 - Your Netatmo Connect application client_id and client_secret.
+
 If you don't have Netatmo App yet, just create one, it's simple and free:
+
 - Register at https://dev.netatmo.com
 - Create an app at https://dev.netatmo.com/dev/createanapp (Enter any name)
 - After successfully created your app, just get client_id and client_secret
@@ -24,75 +30,85 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 
 ## How-to
 
-All function return a json array, you can echo it to get the data you want.
+All functions return a json array, you can echo it to see which key to get.
 
+Initialize:
 ```php
-require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoPresence.php");
-
-//get your connection variable from other file or write them, and initiliaze:
-require($_SERVER['DOCUMENT_ROOT']."/path/to/myloginfile.php");
-$_Presence = new NetatmoPresence($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret);
-
-//get all datas from camera(s), containing last 10 events:
-//$datas = $_Presence->getDatas(10);
-//echo "<pre>".json_encode($datas, JSON_PRETTY_PRINT)."</pre><br>";
-
-//get infos for all cameras:
-$myCameras = $_Presence->getCameras();
-foreach ($myCameras as $thisCam)
-{
-	echo "name: ".$thisCam['name']."<br>";
-	echo "id: ".$thisCam['id']."<br>";
-	echo "vpn url:<br><a href=\"".$thisCam['vpn']."\">".$thisCam['vpn']."</a>";
-	echo "<br>snapshot url:<br><a href=\"".$thisCam['snapshot']."\">".$thisCam['snapshot']."</a><br>";
-	echo "status: ".$thisCam['status']."<br>";
-	echo "sd_status: ".$thisCam['sd_status']."<br>";
-	echo "alim_status: ".$thisCam['alim_status']."<br>";
-	echo "light_mode_status: ".$thisCam['light_mode_status']."<br>";
-	echo "<br>";
-}
-
-//show snapshot:
-$snapshot = $myCameras[0]['snapshot'];
-//echo "<br><img src=\"$snapshot\" width=\"350\" height=\"219\">";
-
-//get 10 last event of defined type as array of [title, snapshotURL, vignetteURL]
-//if you have modified or deleted some event in the Netatmo app, these won't show the snapshot/vignette
-$lastEvents = $_Presence->getEvents('All', 10); //can request 'human', 'animal', 'vehicle', 'movement', 'All'
-foreach ($lastEvents as $thisEvent)
-	{
-		echo $thisEvent['title']."<br>";
-		echo $thisEvent['snapshotURL']."<br>";
-		echo $thisEvent['vignetteURL']."<br>";
-		$var = $thisEvent['vignetteURL'];
-		echo "<br><img src=\"$var\" width=\"80\" height=\"80\">";
-	}
+require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoAPI.php");
+$_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret);
+if (isset($_splNetatmo->error)) die($_splNetatmo->error);
 ```
 
-Support setting/dropping webhooks:
+Weather Station:
+
+```php
+//get main weather station datas:
+$getWeatherStationDatas = $_splNetatmo->getWeatherStationDatas();
+echo "<pre>getWeatherStationDatas:<br>".json_encode($getWeatherStationDatas, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get module datas by its name:
+$getWeatherModuleDatas = $_splNetatmo->getWeatherModuleDatas('Exterieur');
+echo "<pre>getWeatherModuleDatas:<br>".json_encode($getWeatherModuleDatas, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get all temperatures from all modules:
+$getWeatherTemperatures = $_splNetatmo->getWeatherTemperatures();
+echo "<pre>getWeatherTemperatures:<br>".json_encode($getWeatherTemperatures, JSON_PRETTY_PRINT)."</pre><br>";
+echo $getWeatherTemperatures['Exterieur'];
+
+//get all modules batteries:
+//If you specify a number under 100, it will return only modules under this number so you can get low batteries modules.
+$getWeatherBatteries = $_splNetatmo->getWeatherBatteries();
+echo "<pre>getWeatherBatteries:<br>".json_encode($getWeatherBatteries, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get all modules firmwares versions:
+$getWeatherFirmVer = $_splNetatmo->getWeatherFirmVer();
+echo "<pre>getWeatherFirmVer:<br>".json_encode($getWeatherFirmVer, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get all modules radio signal statut:
+$getWeatherRFs = $_splNetatmo->getWeatherRFs();
+echo "<pre>getWeatherRFs:<br>".json_encode($getWeatherRFs, JSON_PRETTY_PRINT)."</pre><br>";
+```
+
+Presence Cameras:
+
+```php
+//get all cameras datas:
+$Cameras = $_splNetatmo->getPresenceCameras();
+echo "<pre>Cameras:<br>".json_encode($Cameras, JSON_PRETTY_PRINT)."</pre><br>";
+echo "<pre>light_mode: ".json_encode($Cameras['Cam_Terrasse']['light_mode_status'], JSON_PRETTY_PRINT)."</pre><br>";
+
+//get 10 last event of defined type:
+//can request 'human', 'animal', 'vehicle', 'movement', 'All'
+$events = $_splNetatmo->getPresenceEvents('All', 10);
+echo "<pre>events:<br>".json_encode($events, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get all untreated datas:
+$datas = $_splNetatmo->getPresenceDatas();
+echo "<pre>datas:<br>".json_encode($datas, JSON_PRETTY_PRINT)."</pre><br>";
+```
+
+Setting/dropping webhooks:
 
 ```php
 //set webhook:
 $endpoint = 'http://www.mydomain.com/myscripts/myPresenceWebhook.php';
-$answer = $_Presence->setWebhook($endpoint);
+$answer = $_splNetatmo->setWebhook($endpoint);
 print_r($answer);
 
 //drop webhook:
-$_Presence->dropWebhook();
-
+$_splNetatmo->dropWebhook();
 ```
 
 ## Changes
 
-#### v2017.2.0 (2017-03-08)
-- Code breaking: all now is in a php class to avoid variable mess with your own script.
-
-#### v2017.1.0 (2017-03-07)
+#### v1.0 (2017-03-24)
 - First public version.
 
 ## ToDo
 
 Waiting for Netatmo SDK write_presence scope to be able to change settings on cameras!
+If someone have *Wellcome*, *Homecoach* or *Thermostat*, feel free to ask for pull request.
+
 
 ## License
 
@@ -103,7 +119,7 @@ Copyright (c) 2017 KiboOst
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+to use, copy, modify, merge, publish, distribute, sub-license, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
