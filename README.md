@@ -1,6 +1,6 @@
 # php-simpleNetatmoAPI
 
-## Simple php functions to get data from your Netatmo devices
+## Simple php API to get data from your Netatmo devices.
 (C) 2017, KiboOst
 
 ## Supported devices
@@ -10,7 +10,7 @@
 
 This is a simple stand-alone API to get your Netatmo devices data.
 
-No need for official Netatmo SDK or any other resources.
+It does rely on official Netatmo SDK, even if no other ressources are needed to get your datas. Just download and use one single php file!
 
 If you need a fully feature custom API to change your Presence cameras settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI Anyway, as it doesn't rely on official Netatmo API (which doesn't provide editing camera settings), it can't set/drop webhooks.
 
