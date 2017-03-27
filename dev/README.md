@@ -16,8 +16,12 @@ As I don't have *Welcome*, *Homecoach* and *Thermostat*, I can't develop robust 
 ## How-to
 
 - Download /dev/splNetatmoAPI.php
-- Check your devices functions and fix/develop new funtions
+- Check your devices functions and fix/develop new functions
 - Pull request to merge your development into this version
+
+All functions as '//--------Untested!!!' are ... untested. The structure is their, but no device to test!
+
+I won't ask someone to send me his devices or login/password account, so I can't go further on supporting these devices.
 
 Initialize:
 
@@ -61,6 +65,11 @@ Thermostat:
 ```php
 $thermos = $_splNetatmo->getThermostats();
 echo "<pre>thermos:<br>".json_encode($thermos, JSON_PRETTY_PRINT)."</pre><br>";
+
+$_splNetatmo->createThermoSched($thermName, $valveName, $zonesArray, $timesArray, $schedName);
+$_splNetatmo->switchThermoSched($thermName, $valveName, $schedName);
+$_splNetatmo->syncThermoSched($thermName, $valveName, $zonesArray, $timesArray);
+$_splNetatmo->setThermoPoint($thermName, $valveName, $mode);
 
 echo "<pre>thermosDatas:<br>".json_encode($_splNetatmo->_thermoDatas, JSON_PRETTY_PRINT)."</pre><br>";
 ```
