@@ -248,15 +248,6 @@ class splNetatmoAPI {
 	}
 
 
-	//WELLCOME:
-
-
-	//THERMOSTAT:
-
-
-	//HOMECOACH:
-
-
 	//WEBHOOK:
 	public function setWebhook($endpoint)
 	{
@@ -280,16 +271,11 @@ class splNetatmoAPI {
 	public $_scope;
 	public $error;
 
-	public $_weatherDatas;
-	public $_thermoDatas;
-	public $_presenceDatas;
 	public $_presenceCameras;
-	public $_wellcomeDatas;
-	public $_wellcomeCameras;
-	public $_homecoachDatas;
+	public $_presenceDatas;
+	public $_weatherDatas;
 
-
-	protected $_apiurl = "https://api.netatmo.net";
+	protected $_apiurl = "https://api.netatmo.net/";
 	protected $_Netatmo_user;
 	protected $_Netatmo_pass;
 	protected $_Netatmo_app_id;
