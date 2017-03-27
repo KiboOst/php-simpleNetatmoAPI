@@ -419,7 +419,7 @@ class splNetatmoAPI {
 	public function getThermoDevices() //--------Untested!!!
 	{
 		if (is_null($this->_thermoDatas)) $this->getThermoDatas();
-		if( !isset($this->_thermoDatas['body']['devices']) ) return array();
+		if( !isset($this->_thermoDatas['body']['devices']) ) return array('No thermostats found.');
 
 		$thermosList = $this->_thermoDatas['body']['devices'];
 		$thermosArray = array();
@@ -469,6 +469,9 @@ class splNetatmoAPI {
 
 	public function createThermoSched($thermName, $valveName, $zonesArray, $timesArray, $schedName) //--------Untested!!!
 	{
+		if (is_null($this->_thermos)) $this->getThermoDevices();
+		if( !isset($this->_thermoDatas['body']['devices']) ) return array('No thermostats found.');
+
 		$therm = $this->getThermByName($thermName);
 		if( isset($therm['id']) ) $thermID = $therm['id'];
 		else return array('Unfound thermostat.');
@@ -487,6 +490,9 @@ class splNetatmoAPI {
 
 	public function switchThermoSched($thermName, $valveName, $schedName) //--------Untested!!!
 	{
+		if (is_null($this->_thermos)) $this->getThermoDevices();
+		if( !isset($this->_thermoDatas['body']['devices']) ) return array('No thermostats found.');
+
 		$therm = $this->getThermByName($thermName);
 		if( isset($therm['id']) ) $thermID = $therm['id'];
 		else return array('Unfound thermostat.');
@@ -506,6 +512,9 @@ class splNetatmoAPI {
 
 	public function syncThermoSched($thermName, $valveName, $zonesArray, $timesArray) //--------Untested!!!
 	{
+		if (is_null($this->_thermos)) $this->getThermoDevices();
+		if( !isset($this->_thermoDatas['body']['devices']) ) return array('No thermostats found.');
+
 		$therm = $this->getThermByName($thermName);
 		if( isset($therm['id']) ) $thermID = $therm['id'];
 		else return array('Unfound thermostat.');
@@ -525,6 +534,9 @@ class splNetatmoAPI {
 
 	public function setThermoPoint($thermName, $valveName, $mode) //--------Untested!!!
 	{
+		if (is_null($this->_thermos)) $this->getThermoDevices();
+		if( !isset($this->_thermoDatas['body']['devices']) ) return array('No thermostats found.');
+
 		$therm = $this->getThermByName($thermName);
 		if( isset($therm['id']) ) $thermID = $therm['id'];
 		else return array('Unfound thermostat.');
@@ -571,8 +583,6 @@ class splNetatmoAPI {
 
 		return array('Unfound valve.');
 	}
-
-
 
 	public function getThermoDatas() //request full thermostats datas //--------Untested!!!
 	{
