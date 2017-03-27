@@ -11,7 +11,7 @@
 
 Dev version to help supporting full Netatmo devices.
 
-As I don't have *Wellcome*, *Homecoach* and *Thermostat*, I can't develop robust functions for these devices.
+As I don't have *Welcome*, *Homecoach* and *Thermostat*, I can't develop robust functions for these devices.
 
 ## How-to
 
@@ -33,10 +33,9 @@ Cameras:
 
 ```php
 //get all cameras datas:
+//should return both Presence and Welcome cameras, with differentiating ['type']
 $Cameras = $_splNetatmo->getCameras();
 echo "<pre>Cameras:<br>".json_encode($Cameras, JSON_PRETTY_PRINT)."</pre><br>";
-
-//should return both Presence and Welcome cameras, with differentiating ['type']
 
 //get 10 last event of defined outdoor type:
 //can request 'human', 'animal', 'vehicle', 'movement', 'All'
@@ -49,7 +48,7 @@ $events = $_splNetatmo->getIndoorEvents('All', 10);
 echo "<pre>events:<br>".json_encode($events, JSON_PRETTY_PRINT)."</pre><br>";
 
 //get home persons:
-$persons = $_splNetatmo->getPersons('All', 10);
+$persons = $_splNetatmo->getPersons();
 echo "<pre>persons:<br>".json_encode($persons, JSON_PRETTY_PRINT)."</pre><br>";
 
 //get all untreated datas:
