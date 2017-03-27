@@ -17,7 +17,7 @@ class splNetatmoAPI {
 		$this->getCameras();
 		$this->getPersons();
 
-		$this->getThermostats();
+		$this->getThermoDevices();
 
 		$this->getCoachs();
 
@@ -227,7 +227,7 @@ class splNetatmoAPI {
 		return $returnEvents;
 	}
 
-	public function getIndoorEvents($requestType='All', $num=1) //person, person_away, movement, All
+	public function getIndoorEvents($requestType='All', $num=1) //person, person_away, movement, All  //--------Untested!!!
 	{
 		//will return the last event of defined type as array of [title, snapshotURL, vignetteURL]
 		if (is_null($this->_camerasDatas)) $this->getCamerasDatas(10);
@@ -316,7 +316,7 @@ class splNetatmoAPI {
 		{
 			$thisCam = array();
 
-			if( isset($camera['light_mode_status']) ) //Presence
+			if( $camera['type'] == 'NOC' ) //Presence
 			{
 				$cameraVPN = $camera['vpn_url'];
 				$thisCam['snapshot'] = $cameraVPN.'/live/snapshot_720.jpg';
@@ -352,7 +352,7 @@ class splNetatmoAPI {
 		return $CamerasArray;
 	}
 
-	public function getPersons()
+	public function getPersons() //--------Untested!!!
 	{
 		if (is_null($this->_camerasDatas)) $this->getCamerasDatas(10);
 		$homeDatas = $this->_camerasDatas;
@@ -378,7 +378,7 @@ class splNetatmoAPI {
 		else return array('None');
 	}
 
-	public function getPersonById($id)
+	public function getPersonById($id) //--------Untested!!!
 	{
 		if (is_null($this->_cameraPersons)) $this->getPersons();
 		if (is_null($this->_cameraPersons)) return array('No person defined in this home.');
@@ -390,7 +390,7 @@ class splNetatmoAPI {
 		return array('Unfound person.');
 	}
 
-	public function getPersonByName($name)
+	public function getPersonByName($name) //--------Untested!!!
 	{
 		if (is_null($this->_cameraPersons)) $this->getPersons();
 		if (is_null($this->_cameraPersons)) return array('No person defined in this home.');
@@ -415,44 +415,166 @@ class splNetatmoAPI {
 	}
 
 
-	//THERMOSTAT: --------Untested!!!
-	public function getThermostats()
+	//THERMOSTAT:
+	public function getThermoDevices() //--------Untested!!!
 	{
 		if (is_null($this->_thermoDatas)) $this->getThermoDatas();
-		if( !isset($this->_thermoDatas['body']['devices']['modules']) ) return array();
+		if( !isset($this->_thermoDatas['body']['devices']) ) return array();
 
-		$thermosList = $this->_thermoDatas['body']['devices']['modules'];
+		$thermosList = $this->_thermoDatas['body']['devices'];
 		$thermosArray = array();
 
+		//get thermostats
 		foreach ($thermosList as $thermo)
 		{
 			$thisThermo = array();
 
-			$thisThermo['module_name'] = $thermo['module_name'];
+			$thisThermo['name'] = $thermo['station_name'];
 			$thisThermo['id'] = $thermo['id'];
 			$thisThermo['firmware'] = $thermo['firmware'];
-			$thisThermo['orientation'] = $thermo['therm_orientation'];
-			$thisThermo['cmd'] = $thermo['therm_relay_cmd'];
-			$thisThermo['programs'] = $thermo['therm_program_list'];
-			$thisThermo['measured'] = $thermo['measured'];
+			$thisThermo['place'] = $thermo['place'];
+			$thisThermo['wifi_status'] = $thermo['wifi_status'];
+			$thisThermo['last_plug_seen'] = gmdate("d-m-Y H:i:s", $thermo['last_plug_seen']);
+			$thisThermo['last_status_store'] = gmdate("d-m-Y H:i:s", $thermo['last_status_store']);
 
-			$thermosArray[$thisThermo['module_name']] = $thisThermo;
+			//get valves for this thermostat:
+			$thisThermo['valves'] = array();
+			$valves = $thermo['modules'];
+
+			foreach ($valves as $valve)
+			{
+				$thisValve = array();
+
+				$thisValve['name'] = $valve['module_name'];
+				$thisValve['id'] = $valve['_id'];
+				$thisValve['last_message'] = gmdate("d-m-Y H:i:s", $valve['last_message']);
+				$thisValve['orientation'] = $valve['therm_orientation'];
+				$thisValve['cmd'] = $valve['therm_relay_cmd'];
+				$thisValve['measured'] = $valve['measured'];
+				$thisValve['program_list'] = $valve['therm_program_list'];
+				$thisValve['battery'] = $valve['battery_vp'];
+				$thisValve['rf'] = $valve['rf_status'];
+				$thisValve['firmware'] = $valve['firmware'];
+				$thisValve['type'] = $valve['type'];
+
+				array_push($thisThermo['valves'], $thisValve);
+			}
+
+			$thermosArray[$thisThermo['name']] = $thisThermo;
 		}
-		//add main station:
-		$main = array();
-		$mainDatas = $this->_thermoDatas['body'][0];
-
-		$main['station_name'] = $mainDatas['station_name'];
-		$main['wifi_status'] = $mainDatas['wifi_status'];
-		$main['firmware'] = $mainDatas['firmware'];
-
-		$thermosArray[$main['station_name']] = $mainDatas;
 
 		$this->_thermos = $thermosArray;
 		return $thermosArray;
 	}
 
-	public function getThermoDatas() //request full thermostats datas
+	public function createThermoSched($thermName, $valveName, $zonesArray, $timesArray, $schedName) //--------Untested!!!
+	{
+		$therm = $this->getThermByName($thermName);
+		if( isset($therm['id']) ) $thermID = $therm['id'];
+		else return array('Unfound thermostat.');
+
+		$valve = $this->getThermValveByName($valveName);
+		if( isset($valve['id']) ) $valveID = $valve['id'];
+		else return array('Unfound valve.');
+
+		$api_url = $this->_apiurl."/api/createnewschedule" . $this->_accesstoken;
+		$url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray.'&name='.$schedName;
+		$response = file_get_contents($api_url, false);
+
+		$jsonDatas = json_decode($response, true);
+		return $jsonDatas;
+	}
+
+	public function switchThermoSched($thermName, $valveName, $schedName) //--------Untested!!!
+	{
+		$therm = $this->getThermByName($thermName);
+		if( isset($therm['id']) ) $thermID = $therm['id'];
+		else return array('Unfound thermostat.');
+
+		$valve = $this->getThermValveByName($valveName);
+		if( isset($valve['id']) ) $valveID = $valve['id'];
+		else return array('Unfound valve.');
+
+		$api_url = $this->_apiurl."/api/Switchschedule" . $this->_accesstoken;
+		$url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&schedule_id='.$scheID;
+
+		$response = file_get_contents($api_url, false);
+
+		$jsonDatas = json_decode($response, true);
+		return $jsonDatas;
+	}
+
+	public function syncThermoSched($thermName, $valveName, $zonesArray, $timesArray) //--------Untested!!!
+	{
+		$therm = $this->getThermByName($thermName);
+		if( isset($therm['id']) ) $thermID = $therm['id'];
+		else return array('Unfound thermostat.');
+
+		$valve = $this->getThermValveByName($valveName);
+		if( isset($valve['id']) ) $valveID = $valve['id'];
+		else return array('Unfound valve.');
+
+		$api_url = $this->_apiurl."/api/syncschedule" . $this->_accesstoken;
+		$url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray;
+
+		$response = file_get_contents($api_url, false);
+
+		$jsonDatas = json_decode($response, true);
+		return $jsonDatas;
+	}
+
+	public function setThermoPoint($thermName, $valveName, $mode) //--------Untested!!!
+	{
+		$therm = $this->getThermByName($thermName);
+		if( isset($therm['id']) ) $thermID = $therm['id'];
+		else return array('Unfound thermostat.');
+
+		$valve = $this->getThermValveByName($valveName);
+		if( isset($valve['id']) ) $valveID = $valve['id'];
+		else return array('Unfound valve.');
+
+		$api_url = $this->_apiurl."/api/setthermpoint" . $this->_accesstoken;
+		$url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&setpoint_mode='.$mode;
+
+		$response = file_get_contents($api_url, false);
+
+		$jsonDatas = json_decode($response, true);
+		return $jsonDatas;
+	}
+
+	public function getThermByName($thermName) //--------Untested!!!
+	{
+		$c = count($this->_thermos);
+		for ($i=0; $i < $c; $i++)
+		{
+			$therm = array_values($this->_thermos)[$i];
+			if ($therm['name'] == $thermName) return $therm;
+		}
+
+		return array('Unfound thermostat.');
+	}
+
+	public function getThermValveByName($thermName, $valveName) //--------Untested!!!
+	{
+		$c = count($this->_thermos);
+		for ($i=0; $i < $c; $i++)
+		{
+			$therm = array_values($this->_thermos)[$i];
+			if ($therm['name'] == $thermName)
+			{
+				foreach ($therm['valves'] as $valve)
+				{
+					if($valve['name'] == $valveName) return $valve;
+				}
+			}
+		}
+
+		return array('Unfound valve.');
+	}
+
+
+
+	public function getThermoDatas() //request full thermostats datas //--------Untested!!!
 	{
 		$api_url = $this->_apiurl."/api/getthermostatsdata?access_token=" . $this->_accesstoken;
 		$response = file_get_contents($api_url, false);
@@ -517,17 +639,26 @@ class splNetatmoAPI {
 
 	//internal functions==================================================
 
+	//home:
 	public $_home;
 	public $_timezone;
 
+	//API:
 	public $_scope;
 	public $error;
 
-	public $_cameras;
+	//devices:
+	public $_cameras; //both Presences and
 	public $_cameraPersons;
+
 	public $_thermos;
+	public $_thermoValves;
+	public $_thermoZones;
+	public $_thermoPrograms;
+
 	public $_homecoachs;
 
+	//datas:
 	public $_camerasDatas;
 	public $_thermoDatas;
 	public $_weatherDatas;
@@ -557,8 +688,7 @@ class splNetatmoAPI {
 		$opts = array('http' =>
 							array(
 								'method'  => 'POST',
-								'header'  => 'Content-type: application/x-www-form-urlencoded'."\r\n".
-											'Accept-Charset: UTF-8, *;q=0'."\r\n".
+								'header'  => 'Content-type: application/x-www-form-urlencoded;charset=UTF-8'."\r\n".
 											'User-Agent: netatmoclient',
 								'content' => $postdata
 				)
