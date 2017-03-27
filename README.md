@@ -8,13 +8,15 @@
 - Netatmo Weather Station
 - Netatmo Presence Cameras
 
-This is a simple stand-alone API to get your Netatmo devices data.
+This is a simple stand-alone API to get your Netatmo devices data in a more easy and more readable way.
 
-It does rely on official Netatmo SDK, even if no other ressources are needed to get your datas. Just download and use one single php file!
+It does rely on official Netatmo SDK, even if no other resources are needed to get your data. Just download and use one single php file!
 
-If you need a fully feature custom API to change your Presence cameras settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI Anyway, as it doesn't rely on official Netatmo API (which doesn't provide editing camera settings), it can't set/drop webhooks.
+If you need a fully feature custom API to change your Presence cameras settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI 
 
-Feel free to submit an issue or pull request to add more (*Wellcome*, *Homecoach* and *Thermostat* support by someone having these could be great).
+## Help request
+
+As I don't have *Wellcome*, *Homecoach* and *Thermostat*, I can't develop robust functions for these devices. If you dare to help, have a look at dev folder, which provide a more advanced but untested API version to support these devices.
 
 ## Requirements
 
@@ -26,7 +28,6 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 - Register at https://dev.netatmo.com
 - Create an app at https://dev.netatmo.com/dev/createanapp (Enter any name)
 - After successfully created your app, just get client_id and client_secret
-
 
 ## How-to
 
