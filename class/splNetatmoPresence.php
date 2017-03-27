@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-	public $_version = "1.0";
+	public $_version = "1.02";
 
 	//user functions======================================================
 
@@ -125,28 +125,25 @@ class splNetatmoAPI {
 		foreach ($cameraList as $camera)
 		{
 			$thisCam = array();
-			$cameraVPN = $camera["vpn_url"];
-			$thisCam['snapshot'] = $cameraVPN.'/live/snapshot_720.jpg';
-
-			if ($camera['is_local'] == false)
+			if( $camera['type'] == 'NOC' ) //Presence
 			{
-				$cameraVPN = $cameraVPN."/live/index.m3u8";
-			}
-			else
-			{
-				$cameraVPN = $cameraVPN."/live/index_local.m3u8";
-			}
+				$cameraVPN = $camera["vpn_url"];
+				$thisCam['snapshot'] = $cameraVPN.'/live/snapshot_720.jpg';
 
-			$thisCam['name'] = $camera['name'];
-			$thisCam['id'] = $camera['id'];
-			$thisCam['vpn'] = $cameraVPN;
-			$thisCam['status'] = $camera['status'];
-			$thisCam['sd_status'] = $camera['sd_status'];
-			$thisCam['alim_status'] = $camera['alim_status'];
-			$thisCam['light_mode_status'] = $camera['light_mode_status'];
-			$thisCam['is_local'] = $camera['is_local'];
+				if ($camera['is_local'] == false) $cameraVPN = $cameraVPN."/live/index.m3u8";
+				else $cameraVPN = $cameraVPN."/live/index_local.m3u8";
 
-			$CamerasArray[$camera['name']] = $thisCam;
+				$thisCam['name'] = $camera['name'];
+				$thisCam['id'] = $camera['id'];
+				$thisCam['vpn'] = $cameraVPN;
+				$thisCam['status'] = $camera['status'];
+				$thisCam['sd_status'] = $camera['sd_status'];
+				$thisCam['alim_status'] = $camera['alim_status'];
+				$thisCam['light_mode_status'] = $camera['light_mode_status'];
+				$thisCam['is_local'] = $camera['is_local'];
+
+				$CamerasArray[$camera['name']] = $thisCam;
+			}
 		}
 		$this->_presenceCameras = $CamerasArray;
 		return $CamerasArray;
