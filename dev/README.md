@@ -1,66 +1,36 @@
 # php-simpleNetatmoAPI dev version
 
 ## Simple php API to get data from your Netatmo devices.
-(C) 2017, KiboOst
+
 
 ## Feature development
 
-- Netatmo Welcome Cameras
 - Netatmo Home Coach
 - Netatmo Thermostat
 
 Dev version to help supporting full Netatmo devices.
 
-As I don't have *Welcome*, *Homecoach* and *Thermostat*, I can't develop robust functions for these devices.
+As I don't have *Homecoach* and *Thermostat*, I can't develop robust functions for these devices.
 
 ## How-to
 
-- Download /dev/splNetatmoAPI.php
+- Download /dev/splNetatmoAPIdev.php
 - Check your devices functions and fix/develop new functions
 - Pull request to merge your development into this version
 
 All functions as '//--------Untested!!!' are ... untested. The structure is their, but no device to test!
 
-I won't ask someone to send me his devices or login/password account, so I can't go further on supporting these devices.
-
 Initialize:
 
 ```php
-require($_SERVER['DOCUMENT_ROOT']."/path/to/dev/splNetatmoAPI.php");
+require($_SERVER['DOCUMENT_ROOT']."/path/to/dev/splNetatmoAPIdev.php");
 $_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret);
 if (isset($_splNetatmo->error)) die($_splNetatmo->error);
 ```
 
 ## Features to test:
 
-Cameras:
-
-```php
-//get all cameras datas:
-//should return both Presence and Welcome cameras, with differentiating ['type']
-$Cameras = $_splNetatmo->getCameras();
-echo "<pre>Cameras:<br>".json_encode($Cameras, JSON_PRETTY_PRINT)."</pre><br>";
-
-//get 10 last event of defined outdoor type:
-//can request 'human', 'animal', 'vehicle', 'movement', 'All'
-$events = $_splNetatmo->getOutdoorEvents('All', 10);
-echo "<pre>events:<br>".json_encode($events, JSON_PRETTY_PRINT)."</pre><br>";
-
-//get 10 last event of defined indoor type:
-//can request 'person', 'animal', 'person_away', 'movement', 'All'
-$events = $_splNetatmo->getIndoorEvents('All', 10);
-echo "<pre>events:<br>".json_encode($events, JSON_PRETTY_PRINT)."</pre><br>";
-
-//get home persons:
-$persons = $_splNetatmo->getPersons();
-echo "<pre>persons:<br>".json_encode($persons, JSON_PRETTY_PRINT)."</pre><br>";
-
-//get all untreated datas:
-$datas = $_splNetatmo->getCamerasDatas();
-echo "<pre>datas:<br>".json_encode($datas, JSON_PRETTY_PRINT)."</pre><br>";
-```
-
-Thermostat:
+#### Thermostat:
 
 ```php
 $thermos = $_splNetatmo->getThermostats();
@@ -74,7 +44,7 @@ $_splNetatmo->setThermoPoint($thermName, $valveName, $mode);
 echo "<pre>thermosDatas:<br>".json_encode($_splNetatmo->_thermoDatas, JSON_PRETTY_PRINT)."</pre><br>";
 ```
 
-Home Coach:
+#### Home Coach:
 
 ```php
 $coachs = $_splNetatmo->getCoachs();
@@ -84,6 +54,9 @@ echo "<pre>coachsDatas:<br>".json_encode($_splNetatmo->_homecoachDatas, JSON_PRE
 ```
 
 ## Changes
+
+#### v1.2dev (2017-05-24)
+- Welcome camera now supported in stable version.
 
 #### v1.2dev (2017-03-27)
 - First public dev version.
