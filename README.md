@@ -1,22 +1,18 @@
 # php-simpleNetatmoAPI
 
 ## Simple php API to get data from your Netatmo devices.
-(C) 2017, KiboOst
 
 ## Supported devices
 
 - Netatmo Weather Station
 - Netatmo Presence Cameras
+- Netatmo Welcome Cameras
 
 This is a simple stand-alone API to get your Netatmo devices data in a more easy and more readable way.
 
 It does rely on official Netatmo SDK, even if no other resources are needed to get your data. Just download and use one single php file!
 
-If you need a fully feature custom API to change your Presence cameras settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoPresenceAPI 
-
-## Help request
-
-As I don't have *Wellcome*, *Homecoach* and *Thermostat*, I can't develop robust functions for these devices. If you dare to help, have a look at dev folder, which provide a more advanced but untested API version to support these devices.
+If you need a fully feature custom API to change your Presence/Welcome cameras settings, alerts and such, check here: https://github.com/KiboOst/php-NetatmoCameraAPI 
 
 ## Requirements
 
@@ -40,13 +36,9 @@ $_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, 
 if (isset($_splNetatmo->error)) die($_splNetatmo->error);
 ```
 
-Weather Station:
+#### Weather Station:
 
 ```php
-//get main weather station datas:
-$getWeatherStationDatas = $_splNetatmo->getWeatherStationDatas();
-echo "<pre>getWeatherStationDatas:<br>".json_encode($getWeatherStationDatas, JSON_PRETTY_PRINT)."</pre><br>";
-
 //get module datas by its name:
 $getWeatherModuleDatas = $_splNetatmo->getWeatherModuleDatas('Exterieur');
 echo "<pre>getWeatherModuleDatas:<br>".json_encode($getWeatherModuleDatas, JSON_PRETTY_PRINT)."</pre><br>";
@@ -70,25 +62,52 @@ $getWeatherRFs = $_splNetatmo->getWeatherRFs();
 echo "<pre>getWeatherRFs:<br>".json_encode($getWeatherRFs, JSON_PRETTY_PRINT)."</pre><br>";
 ```
 
-Presence Cameras:
+#### Presence Cameras:
 
 ```php
-//get all cameras datas:
+//get all Presence cameras datas:
 $Cameras = $_splNetatmo->getPresenceCameras();
 echo "<pre>Cameras:<br>".json_encode($Cameras, JSON_PRETTY_PRINT)."</pre><br>";
 echo "<pre>light_mode: ".json_encode($Cameras['Cam_Terrasse']['light_mode_status'], JSON_PRETTY_PRINT)."</pre><br>";
 
 //get 10 last event of defined type:
 //can request 'human', 'animal', 'vehicle', 'movement', 'All'
-$events = $_splNetatmo->getPresenceEvents('All', 10);
+$events = $_splNetatmo->getOutdoorEvents('All', 10);
 echo "<pre>events:<br>".json_encode($events, JSON_PRETTY_PRINT)."</pre><br>";
 
-//get all untreated datas:
-$datas = $_splNetatmo->getPresenceDatas();
-echo "<pre>datas:<br>".json_encode($datas, JSON_PRETTY_PRINT)."</pre><br>";
 ```
 
-Setting/dropping webhooks:
+#### Welcome Cameras:
+
+```php
+//get all Welcome cameras datas:
+$Cameras = $_splNetatmo->getWelcomeCameras();
+echo "<pre>Cameras:<br>".json_encode($Cameras, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get 10 last events:
+$events = $_splNetatmo->getIndoorEvents(10);
+echo "<pre>events:<br>".json_encode($events, JSON_PRETTY_PRINT)."</pre><br>";
+
+//get all persons at home:
+$atHome = $_splNetatmo->getPersonsAtHome();
+echo "<pre>atHome :<br>".json_encode($atHome , JSON_PRETTY_PRINT)."</pre><br>";
+
+//get John datas:
+$John = $_splNetatmo->getPerson('John');
+echo "<pre>John :<br>".json_encode($John , JSON_PRETTY_PRINT)."</pre><br>";
+
+//set John away from home:
+$_splNetatmo->setPersonAway('John');
+
+//set home empty:
+$_splNetatmo->setHomeEmpty();
+
+//is home empty ?
+echo $_splNetatmo->isHomeEmpty();
+
+```
+
+#### Setting/dropping webhooks:
 
 ```php
 //set webhook:
@@ -101,6 +120,10 @@ $_splNetatmo->dropWebhook();
 ```
 
 ## Changes
+
+#### v1.2 (2017-05-24)
+- New: Welcome cameras support!
+- Warning: check Presence functions for name changes.
 
 #### v1.0 (2017-03-24)
 - First public version.
