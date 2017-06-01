@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.2';
+    public $_APIversion = '1.21';
 
     //user functions======================================================
 
@@ -136,7 +136,7 @@ class splNetatmoAPI {
                 if ($cam['id'] == $camId)
                 {
                     $camName = $cam['name'];
-                    $camVPN = $cam['vpn'];
+                    if (isset($cam['vpn'])) $camVPN = $cam['vpn'];
                     $camType = $cam['type'];
                     break;
                 }
