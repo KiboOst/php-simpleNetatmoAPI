@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.21';
+    public $_APIversion = '1.3';
 
     //user functions======================================================
 
@@ -296,8 +296,8 @@ class splNetatmoAPI {
         $personID = $person['id'];
         $homeID = $this->_camerasDatas['body']['homes'][$this->_homeID]['id'];
 
-        $api_url = $this->_apiurl.'/api/setpersonsaway?access_token=' . $this->_accesstoken .'&home_id='.$homeID.'&person_id='.$personID .'&size=2';
-        $response = file_get_contents($api_url, false);
+        $url = $this->_apiurl.'/api/setpersonsaway?access_token=' . $this->_accesstoken .'&home_id='.$homeID.'&person_id='.$personID .'&size=2';
+        $response = file_get_contents($url, false);
 
         $jsonDatas = json_decode($response, true);
         return $jsonDatas;
@@ -307,8 +307,69 @@ class splNetatmoAPI {
     {
         $homeID = $this->_camerasDatas['body']['homes'][$this->_homeID]['id'];
 
-        $api_url = $this->_apiurl.'/api/setpersonsaway?access_token=' . $this->_accesstoken .'&home_id='.$homeID.'&size=2';
-        $response = file_get_contents($api_url, false);
+        $url = $this->_apiurl.'/api/setpersonsaway?access_token=' . $this->_accesstoken .'&home_id='.$homeID.'&size=2';
+        $response = file_get_contents($url, false);
+
+        $jsonDatas = json_decode($response, true);
+        return $jsonDatas;
+    }
+
+    public function setLightMode($camName, $mode='auto') //Presence
+    {
+
+        if ( is_string($camName) ) $camera = $this->getCamByName($camName);
+        if ( isset($camera['error']) ) return $camera;
+
+        $value = null;
+        if (in_array($mode, array('on', '1', 1, true), true)) $value = 'on';
+        if (in_array($mode, array('off', '0', 0, false), true)) $value = 'off';
+        if (in_array($mode, array('auto', 2), true)) $value = 'auto';
+        if (!isset($value)) return array('error'=>'Unsupported value');
+
+        $command = '/command/floodlight_set_config?config=';
+        $config = '{"mode":"'.$value.'"}';
+
+        $url = $camera['vpn'].$command.urlencode($config);
+        $response = file_get_contents($url, false);
+
+        $jsonDatas = json_decode($response, true);
+        return $jsonDatas;
+    }
+
+    public function setMonitoring($camName, $mode='on') //Presence - Welcome
+    {
+        if ( is_string($camName) ) $camera = $this->getCamByName($camName);
+        if ( isset($camera['error']) ) return $camera;
+
+        $value = null;
+        if (in_array($mode, array('on', '1', 1, true), true)) $value = 'on';
+        if (in_array($mode, array('off', '0', 0, false), true)) $value = 'off';
+        if (!isset($value)) return array('error'=>'Unsupported value');
+
+        $command = '/command/changestatus?status='.$value;
+        $url = $camera['vpn'].$command;
+
+        $response = file_get_contents($url, false);
+
+        $jsonDatas = json_decode($response, true);
+        return $jsonDatas;
+    }
+
+    public function setLightIntensity($camName, $intensity=100) //Presence
+    {
+        if ( is_string($camName) ) $camera = $this->getCamByName($camName);
+        if ( isset($camera['error']) ) return $camera;
+
+        if ($camera['type'] != 'Presence') return array('result'=>null, 'error' => 'Unsupported camera for setLightIntensity()');
+
+        $intensity = intval($intensity);
+        if ($intensity > 100 or $intensity < 0) return array('result'=>null, 'error' => 'Presence Light use intensity range from 0 to 100');
+
+        $config = '{"intensity":"'.$intensity.'"}';
+        $command = '/command/floodlight_set_config?config=';
+        $url = $camera['vpn'].$command.urlencode($config);
+
+        $response = file_get_contents($url, false);
 
         $jsonDatas = json_decode($response, true);
         return $jsonDatas;
@@ -352,6 +413,15 @@ class splNetatmoAPI {
 
 
     //internal functions==================================================
+    protected function getCamByName($name) //Presence - Welcome
+    {
+        foreach ($this->_cameras as $thisCamera)
+        {
+            if ($thisCamera['name'] == $name) return $thisCamera;
+        }
+        return array('result'=>null, 'error' => 'Unfound camera');
+    }
+
     protected function getCamerasDatas($eventNum=50) //request full Presence/Welcome datas
     {
         $api_url = $this->_apiurl.'/api/gethomedata?access_token=' . $this->_accesstoken .'&size='.$eventNum;
