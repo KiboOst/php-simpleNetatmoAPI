@@ -34,6 +34,18 @@ $_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, 
 if (isset($_splNetatmo->error)) die($_splNetatmo->error);
 ```
 
+If you have several homes, you can specify a homeID as last argument.
+```php
+require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoAPI.php");
+$_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret, 1);
+if (isset($_splNetatmo->error)) die($_splNetatmo->error);
+
+//You can also check homes configured on your account to connect to the right one
+//It will return all homes with name, id and camera number found.
+$homes = $_splNetatmo->getHomes();
+echo "<pre><br>homes:<br>".json_encode($homes, JSON_PRETTY_PRINT)."</pre><br>";
+```
+
 #### Weather Station:
 
 ```php
@@ -130,6 +142,10 @@ $_splNetatmo->dropWebhook();
 ```
 
 ## Changes
+
+#### v1.31 (2017-11-29)
+- New: getHomes() return all found homes with their id and name
+- New: pass home id as last argument: new splNetatmoAPI($user, $pass, $app_id, $app_secret, 1);
 
 #### v1.3 (2017-11-18)
 - New: setMonitoring('camName', 'on')
