@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.3';
+    public $_APIversion = '1.31';
 
     //user functions======================================================
 
@@ -375,6 +375,31 @@ class splNetatmoAPI {
         return $jsonDatas;
     }
 
+    //COMMON:
+    public function getHomes()
+    {
+        $api_url = $this->_apiurl.'/api/gethomedata?access_token=' . $this->_accesstoken .'&size=0';
+        $response = file_get_contents($api_url, false);
+
+        $jsonDatas = json_decode($response, true);
+        $homes = $jsonDatas['body']['homes'];
+
+        $n = count($homes);
+        $datas = [];
+        for ($i = 0; $i < $n; $i++) {
+            $data = [
+                        'ID' => $i,
+                        'name' => $homes[$i]['name'],
+                        'place' => $homes[$i]['place'],
+                        'cameras' => count($homes[$i]['cameras'])
+                    ];
+
+            array_push($datas, $data);
+        }
+        return $datas;
+    }
+
+
     //for sake of retro-compatibility:
     public function getPresenceCameras()
     {
@@ -429,9 +454,18 @@ class splNetatmoAPI {
 
         $jsonDatas = json_decode($response, true);
         $this->_camerasDatas = $jsonDatas;
-        $this->_home = $jsonDatas['body']['homes'][$this->_homeID]['name'];
-        if( isset($jsonDatas['body']['homes'][$this->_homeID]['place']['timezone']) ) $this->_timezone = $jsonDatas['body']['homes'][$this->_homeID]['place']['timezone'];
-        return $jsonDatas;
+        if (isset($jsonDatas['body']['homes'][$this->_homeID]))
+        {
+            $this->_home = $jsonDatas['body']['homes'][$this->_homeID]['name'];
+            if( isset($jsonDatas['body']['homes'][$this->_homeID]['place']['timezone']) ) $this->_timezone = $jsonDatas['body']['homes'][$this->_homeID]['place']['timezone'];
+            return $jsonDatas;
+        }
+        else
+        {
+            $this->error = 'Unfound home with ID '.$this->_homeID;
+            return false;
+        }
+
     }
 
     protected function getWeatherDatas() //request full weather datas
@@ -448,6 +482,9 @@ class splNetatmoAPI {
     {
         if (is_null($this->_camerasDatas)) $this->getCamerasDatas();
         $allCameras = array();
+
+        if (!isset($this->_camerasDatas['body']['homes'][$this->_homeID])) return false;
+
         foreach ($this->_camerasDatas['body']['homes'][$this->_homeID]['cameras'] as $thisCamera)
         {
             //live and snapshots:
@@ -546,11 +583,11 @@ class splNetatmoAPI {
     //API:
     public $_scope;
     public $error;
-    public $_homeID = 0; //will support several homes later
+    public $_homeID;
 
     //devices:
-    public $_cameras; //both Presences and Welcome
-    public $_persons;
+    public $_cameras = []; //both Presences and Welcome
+    public $_persons = [];
 
     //datas:
     protected $_camerasDatas;
@@ -614,12 +651,14 @@ class splNetatmoAPI {
         return true;
     }
 
-    function __construct($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret)
+    function __construct($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret, $homeID=0)
     {
         $this->_Netatmo_user = $Netatmo_user;
         $this->_Netatmo_pass = $Netatmo_pass;
         $this->_Netatmo_app_id = $Netatmo_app_id;
         $this->_Netatmo_app_secret = $Netatmo_app_secret;
+
+        $this->_homeID = $homeID;
         $var = $this->connect();
         if ($var == true)
         {
