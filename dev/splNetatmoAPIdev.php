@@ -348,7 +348,7 @@ class splNetatmoAPI {
             $thisThermo = array();
 
             $thisThermo['name'] = $thermo['station_name'];
-            $thisThermo['id'] = $thermo['id'];
+            $thisThermo['id'] = $thermo['_id'];
             $thisThermo['firmware'] = $thermo['firmware'];
             $thisThermo['place'] = $thermo['place'];
             $thisThermo['wifi_status'] = $thermo['wifi_status'];
