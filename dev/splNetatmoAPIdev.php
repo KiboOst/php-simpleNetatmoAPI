@@ -399,7 +399,7 @@ class splNetatmoAPI {
         else return array('Unfound valve.');
 
         $api_url = $this->_apiurl."/api/createnewschedule?access_token=" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray.'&name='.$schedName;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray.'&name='.$schedName;
         $response = file_get_contents($api_url, false);
 
         $jsonDatas = json_decode($response, true);
@@ -420,7 +420,7 @@ class splNetatmoAPI {
         else return array('Unfound valve.');
 
         $api_url = $this->_apiurl."/api/Switchschedule?access_token=" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&schedule_id='.$scheID;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&schedule_id='.$scheID;
 
         $response = file_get_contents($api_url, false);
 
@@ -442,7 +442,7 @@ class splNetatmoAPI {
         else return array('Unfound valve.');
 
         $api_url = $this->_apiurl."/api/syncschedule?access_token=" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray;
 
         $response = file_get_contents($api_url, false);
 
@@ -464,7 +464,7 @@ class splNetatmoAPI {
         else return array('Unfound valve.');
 
         $api_url = $this->_apiurl."/api/setthermpoint?access_token=" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&setpoint_mode='.$mode;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&setpoint_mode='.$mode;
 
         $response = file_get_contents($api_url, false);
 
