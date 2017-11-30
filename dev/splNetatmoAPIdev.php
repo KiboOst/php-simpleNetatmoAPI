@@ -348,7 +348,7 @@ class splNetatmoAPI {
             $thisThermo = array();
 
             $thisThermo['name'] = $thermo['station_name'];
-            $thisThermo['id'] = $thermo['id'];
+            $thisThermo['id'] = $thermo['_id'];
             $thisThermo['firmware'] = $thermo['firmware'];
             $thisThermo['place'] = $thermo['place'];
             $thisThermo['wifi_status'] = $thermo['wifi_status'];
@@ -394,12 +394,12 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
-        $api_url = $this->_apiurl."/api/createnewschedule" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray.'&name='.$schedName;
+        $api_url = $this->_apiurl."/api/createnewschedule?access_token=" . $this->_accesstoken;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray.'&name='.$schedName;
         $response = file_get_contents($api_url, false);
 
         $jsonDatas = json_decode($response, true);
@@ -415,12 +415,12 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
-        $api_url = $this->_apiurl."/api/Switchschedule" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&schedule_id='.$scheID;
+        $api_url = $this->_apiurl."/api/Switchschedule?access_token=" . $this->_accesstoken;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&schedule_id='.$scheID;
 
         $response = file_get_contents($api_url, false);
 
@@ -437,12 +437,12 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
-        $api_url = $this->_apiurl."/api/syncschedule" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray;
+        $api_url = $this->_apiurl."/api/syncschedule?access_token=" . $this->_accesstoken;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&zones='.$zonesArray.'&timetable='.$timesArray;
 
         $response = file_get_contents($api_url, false);
 
@@ -459,12 +459,12 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
-        $api_url = $this->_apiurl."/api/setthermpoint" . $this->_accesstoken;
-        $url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&setpoint_mode='.$mode;
+        $api_url = $this->_apiurl."/api/setthermpoint?access_token=" . $this->_accesstoken;
+        $api_url = $api_url.'&device_id='.$thermID.'&module_id='.$valveID.'&setpoint_mode='.$mode;
 
         $response = file_get_contents($api_url, false);
 
