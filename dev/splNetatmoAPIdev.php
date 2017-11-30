@@ -394,7 +394,7 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
@@ -415,7 +415,7 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
@@ -437,7 +437,7 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
@@ -459,7 +459,7 @@ class splNetatmoAPI {
         if( isset($therm['id']) ) $thermID = $therm['id'];
         else return array('Unfound thermostat.');
 
-        $valve = $this->getThermValveByName($valveName);
+        $valve = $this->getThermValveByName($thermName, $valveName);
         if( isset($valve['id']) ) $valveID = $valve['id'];
         else return array('Unfound valve.');
 
