@@ -143,6 +143,9 @@ $_splNetatmo->dropWebhook();
 
 ## Changes
 
+#### v1.32 (2018-08-29)
+ - Fix: isHomeEmpty()
+
 #### v1.31 (2017-11-29)
 - New: getHomes() return all found homes with their id and name
 - New: pass home id as last argument: new splNetatmoAPI($user, $pass, $app_id, $app_secret, 1);
