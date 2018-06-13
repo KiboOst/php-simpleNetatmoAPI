@@ -1,3 +1,4 @@
+
 # php-simpleNetatmoAPI
 
 ## Simple php API to get data from your Netatmo devices.
@@ -118,6 +119,10 @@ $_splNetatmo->setPersonAway('John');
 //set home empty:
 $_splNetatmo->setHomeEmpty();
 
+//set person(s) at home:
+$_splNetatmo->setPersonsAtHome('John');
+$_splNetatmo->setPersonsAtHome(['John','William']);
+
 //change Presence light intensity:
 $_splNetatmo->setLightIntensity('MyCam', 85);
 
@@ -143,7 +148,11 @@ $_splNetatmo->dropWebhook();
 
 ## Changes
 
-#### v1.32 (2018-08-29)
+#### v1.4 (2018-06-13)
+- New: setPersonsAtHome()
+- Fix: setMonitoring() for Welcome cameras
+
+#### v1.32 (2018-01-29)
  - Fix: isHomeEmpty()
 
 #### v1.31 (2017-11-29)
