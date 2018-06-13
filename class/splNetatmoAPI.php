@@ -285,7 +285,7 @@ class splNetatmoAPI {
     public function isHomeEmpty() //Welcome
     {
         $atHome = $this->getPersonsAtHome();
-        if (count($atHome)==0) return true;
+        if (count($atHome['result'])==0) return true;
         return false;
     }
 
