@@ -171,12 +171,6 @@ $_splNetatmo->dropWebhook();
 #### v1.0 (2017-03-24)
 - First public version.
 
-## ToDo
-
-Waiting for Netatmo SDK write_presence scope to be able to change settings on cameras!
-If someone have *Wellcome*, *Homecoach* or *Thermostat*, feel free to ask for pull request.
-
-
 ## License
 
 The MIT License (MIT)
