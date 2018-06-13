@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.32';
+    public $_APIversion = '1.4';
 
     //user functions======================================================
 
@@ -285,7 +285,7 @@ class splNetatmoAPI {
     public function isHomeEmpty() //Welcome
     {
         $atHome = $this->getPersonsAtHome();
-        if (count($atHome['result'])==0) return true;
+        if (count($atHome)==0) return true;
         return false;
     }
 
@@ -297,6 +297,37 @@ class splNetatmoAPI {
         $homeID = $this->_camerasDatas['body']['homes'][$this->_homeID]['id'];
 
         $url = $this->_apiurl.'/api/setpersonsaway?access_token=' . $this->_accesstoken .'&home_id='.$homeID.'&person_id='.$personID .'&size=2';
+        $response = file_get_contents($url, false);
+
+        $jsonDatas = json_decode($response, true);
+        return $jsonDatas;
+    }
+
+    public function setPersonsAtHome($persons) //Welcome
+    {
+        if ( is_string($persons) )
+            {
+                $arID = $this->getPersonByName($persons);
+                if ( isset($arString['error']) ) return $arString;
+                $arString = $arID['id'];
+                $arString = '["'.$arString.'"]';
+            }
+
+        if ( is_array($persons) )
+            {
+                $arIDs = array();
+                foreach ($persons as $name)
+                {
+                    $personID = $this->getPersonByName($name);
+                    if ( !isset($personID['error']) ) array_push($arIDs, $personID['id']);
+                }
+                $arString = implode('","', $arIDs);
+                $arString = '["'.$arString.'"]';
+            }
+
+        $homeID = $this->_camerasDatas['body']['homes'][$this->_homeID]['id'];
+
+        $url = $this->_apiurl.'/api/setpersonshome?access_token=' . $this->_accesstoken .'&home_id='.$homeID.'&person_ids='.$arString;
         $response = file_get_contents($url, false);
 
         $jsonDatas = json_decode($response, true);
@@ -522,6 +553,7 @@ class splNetatmoAPI {
             {
                 $camera = array('name' => $thisCamera['name'],
                                 'id' => $thisCamera['id'],
+                                'vpn' => $cameraVPN,
                                 'status' => $thisCamera['status'],
                                 'sd_status' => $thisCamera['sd_status'],
                                 'alim_status' => $thisCamera['alim_status'],
