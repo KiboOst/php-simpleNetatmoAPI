@@ -1,4 +1,4 @@
-
+<img align="right" src="https://res.cloudinary.com/dxyci1a78/image/upload/c_lfill,dpr_1.0,e_trim:0,f_auto,h_28,q_auto,w_120/netatmo-logo" width="120">
 
 # Netatmo callback
 
@@ -7,6 +7,8 @@ I will try here to explain what is a callback script and why it can be usefull.
 You can set such callback script when you create an app on [Netatmo Connect](https://dev.netatmo.com/). Then, each time an event happens (someone is seen outdoor, a known person is seen at home, etc...), Netatmo server will do its job as usual (notifications, make it appear in timeline, etc...) but, it will now send this event to your callback script!
 
 So you won't have to make your script checking timeline or whatever, all events will end to your script automatically. Your script will then be able to do different things regarding the nature of the event. For example, if the home is empty and someone known is seen, you can call Jeedom to say *hello John, welcome home* with a TTS device. Or if your are out and someone is seen outdoor, you can send an email with the snapshot, etc. All is up to you to decide what to do regarding event, time, home state, etc.
+
+<img align="right" src="../readmeAssets/requirements.jpg" width="48">
 
 ## Requirements
 
@@ -18,6 +20,8 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 
 - Register at https://dev.netatmo.com
 - Create an app at https://dev.netatmo.com/dev/createanapp (Enter any name)
+
+<img align="right" src="../readmeAssets/howto.jpg" width="48">
 
 ## How-to
 
