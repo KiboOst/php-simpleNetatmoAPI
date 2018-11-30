@@ -161,6 +161,8 @@ print_r($answer);
 $_splNetatmo->dropWebhook();
 ```
 
+>Need to setup a Netatmo callback ? Check [here](/callback)
+
 <img align="right" src="/readmeAssets/changes.jpg" width="48">
 
 ## Changes
