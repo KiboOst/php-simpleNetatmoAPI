@@ -13,6 +13,8 @@ This is a simple stand-alone API to get your Netatmo devices data in a more easy
 
 It does rely on official Netatmo SDK, even if no other resources are needed to get your data. Just download and use one single php file!
 
+>Need to setup a Netatmo callback ? Check [here](/callback)
+
 ## Requirements
 
 - Your Netatmo login and password.
