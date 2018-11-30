@@ -1,4 +1,7 @@
 
+
+<img align="right" src="https://res.cloudinary.com/dxyci1a78/image/upload/c_lfill,dpr_1.0,e_trim:0,f_auto,h_28,q_auto,w_120/netatmo-logo" width="120">
+
 # php-simpleNetatmoAPI
 
 ## Simple php API to get data from your Netatmo devices.
@@ -15,6 +18,8 @@ It does rely on official Netatmo SDK, even if no other resources are needed to g
 
 >Need to setup a Netatmo callback ? Check [here](/callback)
 
+<img align="right" src="/readmeAssets/requirements.jpg" width="48">
+
 ## Requirements
 
 - Your Netatmo login and password.
@@ -25,6 +30,8 @@ If you don't have Netatmo App yet, just create one, it's simple and free:
 - Register at https://dev.netatmo.com
 - Create an app at https://dev.netatmo.com/dev/createanapp (Enter any name)
 - After successfully created your app, just get client_id and client_secret
+
+<img align="right" src="/readmeAssets/howto.jpg" width="48">
 
 ## How-to
 
@@ -49,7 +56,7 @@ $homes = $_splNetatmo->getHomes();
 echo "<pre><br>homes:<br>".json_encode($homes, JSON_PRETTY_PRINT)."</pre><br>";
 ```
 
-#### Weather Station:
+### Weather Station:
 
 ```php
 //get module datas by its name:
@@ -75,9 +82,12 @@ $getWeatherRFs = $_splNetatmo->getWeatherRFs();
 echo "<pre>getWeatherRFs:<br>".json_encode($getWeatherRFs, JSON_PRETTY_PRINT)."</pre><br>";
 ```
 
-#### Netatmo Cameras:
+### Netatmo Cameras:
 
-##### Get some datas:
+<img align="right" src="/readmeAssets/read.jpg" width="48">
+
+#### Get some datas:
+*Change camera name by yours!*
 
 ```php
 //get all Presence cameras datas:
@@ -110,7 +120,10 @@ echo "<pre>John :<br>".json_encode($John , JSON_PRETTY_PRINT)."</pre><br>";
 echo $_splNetatmo->isHomeEmpty();
 ```
 
-##### Change some settings:
+<img align="right" src="/readmeAssets/set.jpg" width="48">
+
+#### Change some settings:
+*Change camera name by yours!*
 
 ```php
 //You can also get return value to know if all went fine.
@@ -136,7 +149,7 @@ $_splNetatmo->setMonitoring('MyCam', 'on');
 
 ```
 
-#### Setting/dropping webhooks:
+### Setting/dropping webhooks:
 
 ```php
 //set webhook:
@@ -147,6 +160,8 @@ print_r($answer);
 //drop webhook:
 $_splNetatmo->dropWebhook();
 ```
+
+<img align="right" src="/readmeAssets/changes.jpg" width="48">
 
 ## Changes
 
@@ -172,6 +187,8 @@ $_splNetatmo->dropWebhook();
 
 #### v1.0 (2017-03-24)
 - First public version.
+
+<img align="right" src="/readmeAssets/mit.jpg" width="48">
 
 ## License
 
