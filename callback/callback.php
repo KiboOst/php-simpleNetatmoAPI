@@ -26,6 +26,7 @@ $data = json_decode($jsonData, true);
 
 //Now you have event data, do what you want with it!
 //If message AND known person seen by Welcome:
+$eventType = $data['event_type'];
 if(isset($data['message']) && isset($data['persons']) && ($eventType == 'person'))
 {
     try
