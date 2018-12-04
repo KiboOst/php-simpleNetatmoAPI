@@ -26,19 +26,19 @@ $data = json_decode($jsonData, true);
 
 //Now you have event data, do what you want with it!
 //If message AND known person seen by Welcome:
-if(isset($datas['message']) && isset($datas['persons']) && ($eventType == 'person'))
+if(isset($data['message']) && isset($data['persons']) && ($eventType == 'person'))
 {
     try
         {
             //Can have more than one person:
-            if (strpos($datas['message'], 'ont') == true)
+            if (strpos($data['message'], 'ont') == true)
             {
-                $who = explode(' ont ', $datas['message'])[0];
+                $who = explode(' ont ', $data['message'])[0];
                 $who = explode(' et ', $who);
             }
             else
             {
-                $who = array(explode(' a ', $datas['message'])[0]);
+                $who = array(explode(' a ', $data['message'])[0]);
             }
             foreach ($who as $person)
             {
@@ -52,10 +52,10 @@ if(isset($datas['message']) && isset($datas['persons']) && ($eventType == 'perso
 }
 
 //If message AND person seen by Presence
-if(isset($datas['message']) && isset($datas['snapshot_id']) && ($eventType == 'human'))
+if(isset($data['message']) && isset($data['snapshot_id']) && ($eventType == 'human'))
 {
-    $snapshotID = $datas['snapshot_id'];
-    $snapshotKEY = $datas['snapshot_key'];
+    $snapshotID = $data['snapshot_id'];
+    $snapshotKEY = $data['snapshot_key'];
     $snapshotURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$snapshotID.'&key='.$snapshotKEY;
 
     echo 'Someone has been seen outdoor, I may arm the gatling.';
