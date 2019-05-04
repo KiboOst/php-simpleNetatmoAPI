@@ -172,20 +172,37 @@ class splNetatmoAPI {
                         {
                             $subTime = $thisSubEvent['time'];
                             $subTime = date("d-m-Y H:i:s", $subTime);
-
-                            if (isset($thisSubEvent['snapshot']['filename']))  //other vignette of same event!
+                            
+                            if (isset($thisSubEvent['snapshot']['url']))
+                            {
+                                $snapshotURL = $thisSubEvent['snapshot']['url']
+                            }
+                            else if (isset($thisSubEvent['snapshot']['filename']))  //other vignette of same event!
                             {
                                 $snapshotURL = $camVPN.'/'.$thisSubEvent['snapshot']['filename'];
-                                $vignetteURL = $camVPN.'/'.$thisSubEvent['vignette']['filename'];
-                            }else{
+                            }
+                            else
+                            {
                                 $snapshotID = $thisSubEvent['snapshot']['id'];
                                 $snapshotKEY = $thisSubEvent['snapshot']['key'];
                                 $snapshotURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$snapshotID.'&key='.$snapshotKEY;
-
+                            }
+                            
+                            if (isset($thisSubEvent['vignette']['url']))
+                            {
+                                $vignetteURL = $thisSubEvent['vignette']['url']
+                            }
+                            else if (isset($thisSubEvent['vignette']['filename']))  //other vignette of same event!
+                            {
+                                $vignetteURL = $camVPN.'/'.$thisSubEvent['vignette']['filename'];
+                            }
+                            else
+                            {
                                 $vignetteID = $thisSubEvent['vignette']['id'];
                                 $vignetteKEY = $thisSubEvent['vignette']['key'];
                                 $vignetteURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$vignetteID.'&key='.$vignetteKEY;
                             }
+                            
                             //echo '<img src=''.$snapshotURL.'' height='219' width='350' </img>'.'<br>';
                             //echo '<img src=''.$vignetteURL.'' height='166' width='166' </img>'.'<br>';
 
@@ -251,9 +268,16 @@ class splNetatmoAPI {
             if (isset($thisEvent['snapshot']))
             {
                 $snapshot = $thisEvent['snapshot'];
-                $snapshotID = $snapshot['id'];
-                $snapshotKEY = $snapshot['key'];
-                $snapshotURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$snapshotID.'&key='.$snapshotKEY;
+                if (isset($snapshot['url']))
+                {
+                    $snapshotURL = $snapshot['url']
+                }
+                else
+                {
+                    $snapshotID = $snapshot['id'];
+                    $snapshotKEY = $snapshot['key'];
+                    $snapshotURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$snapshotID.'&key='.$snapshotKEY;
+                }
                 $returnThis['snapshotURL'] = $snapshotURL;
             }
 
