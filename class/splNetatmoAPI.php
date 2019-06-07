@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.4';
+    public $_APIversion = '1.51';
 
     //user functions======================================================
 
@@ -172,10 +172,10 @@ class splNetatmoAPI {
                         {
                             $subTime = $thisSubEvent['time'];
                             $subTime = date("d-m-Y H:i:s", $subTime);
-                            
+
                             if (isset($thisSubEvent['snapshot']['url']))
                             {
-                                $snapshotURL = $thisSubEvent['snapshot']['url']
+                                $snapshotURL = $thisSubEvent['snapshot']['url'];
                             }
                             else if (isset($thisSubEvent['snapshot']['filename']))  //other vignette of same event!
                             {
@@ -187,10 +187,10 @@ class splNetatmoAPI {
                                 $snapshotKEY = $thisSubEvent['snapshot']['key'];
                                 $snapshotURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$snapshotID.'&key='.$snapshotKEY;
                             }
-                            
+
                             if (isset($thisSubEvent['vignette']['url']))
                             {
-                                $vignetteURL = $thisSubEvent['vignette']['url']
+                                $vignetteURL = $thisSubEvent['vignette']['url'];
                             }
                             else if (isset($thisSubEvent['vignette']['filename']))  //other vignette of same event!
                             {
@@ -202,9 +202,9 @@ class splNetatmoAPI {
                                 $vignetteKEY = $thisSubEvent['vignette']['key'];
                                 $vignetteURL = 'https://api.netatmo.com/api/getcamerapicture?image_id='.$vignetteID.'&key='.$vignetteKEY;
                             }
-                            
-                            //echo '<img src=''.$snapshotURL.'' height='219' width='350' </img>'.'<br>';
-                            //echo '<img src=''.$vignetteURL.'' height='166' width='166' </img>'.'<br>';
+
+                            //echo '<img src='.$snapshotURL.' height="219" width="350" </img>'.'<br>';
+                            //echo '<img src='.$vignetteURL.' height="166" width="166" </img>'.'<br>';
 
                             $returnThis = array();
                             $returnThis['title'] = $subMsg;
@@ -270,7 +270,7 @@ class splNetatmoAPI {
                 $snapshot = $thisEvent['snapshot'];
                 if (isset($snapshot['url']))
                 {
-                    $snapshotURL = $snapshot['url']
+                    $snapshotURL = $snapshot['url'];
                 }
                 else
                 {
@@ -460,7 +460,7 @@ class splNetatmoAPI {
     {
         $camArray = array();
         foreach ($this->_cameras as $camera) {
-            if ($camera['type'] == 'Presence') $camArray[$camera['name']] = $camera;;
+            if ($camera['type'] == 'Presence') $camArray[$camera['name']] = $camera;
         }
         return $camArray;
     }
@@ -590,7 +590,7 @@ class splNetatmoAPI {
         $this->_cameras = $allCameras;
     }
 
-    protected function getPersons() //Welcome
+    public function getPersons() //Welcome
     {
         if (is_null($this->_camerasDatas)) $this->getCamerasDatas();
         $homeDatas = $this->_camerasDatas;
