@@ -11,6 +11,7 @@
 - Netatmo Weather Station
 - Netatmo Presence Cameras
 - Netatmo Welcome Cameras
+- Netatmo Doorbell
 
 This is a simple stand-alone API to get your Netatmo devices data in a more easy and more readable way.
 
