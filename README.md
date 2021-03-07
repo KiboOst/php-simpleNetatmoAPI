@@ -29,7 +29,7 @@ It does rely on official Netatmo SDK, even if no other resources are needed to g
 If you don't have Netatmo App yet, just create one, it's simple and free:
 
 - Register at https://dev.netatmo.com
-- Create an app at https://dev.netatmo.com/dev/createanapp (Enter any name)
+- Create an app at https://dev.netatmo.com/apps/createanapp#form (Enter any name)
 - After successfully created your app, just get client_id and client_secret
 
 <img align="right" src="/readmeAssets/howto.jpg" width="48">
