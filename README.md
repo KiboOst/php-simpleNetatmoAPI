@@ -1,6 +1,6 @@
 
 
-<img align="right" src="https://res.cloudinary.com/dxyci1a78/image/upload/c_lfill,dpr_1.0,e_trim:0,f_auto,h_28,q_auto,w_120/netatmo-logo" width="120">
+<img align="right" src="/readmeAssets/logoNetatmo.png" width="120">
 
 # php-simpleNetatmoAPI
 
@@ -166,6 +166,9 @@ $_splNetatmo->dropWebhook();
 <img align="right" src="/readmeAssets/changes.jpg" width="48">
 
 ## Changes
+
+#### v1.6 (2021-03-07)
+- Support doorbell
 
 #### v1.4 (2018-06-13)
 - New: setPersonsAtHome()
