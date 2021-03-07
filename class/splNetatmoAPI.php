@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.51';
+    public $_APIversion = '1.6';
 
     //user functions======================================================
 
@@ -469,7 +469,16 @@ class splNetatmoAPI {
     {
         $camArray = array();
         foreach ($this->_cameras as $camera) {
-            if ($camera['type'] == 'Welcome') $camArray[$camera['name']] = $camera;;
+            if ($camera['type'] == 'Welcome') $camArray[$camera['name']] = $camera;
+        }
+        return $camArray;
+    }
+
+    public function getDoorbells()
+    {
+        $camArray = array();
+        foreach ($this->_cameras as $camera) {
+            if ($camera['type'] == 'Doorbell') $camArray[$camera['name']] = $camera;
         }
         return $camArray;
     }
@@ -578,10 +587,27 @@ class splNetatmoAPI {
                 $camera = array('name' => $thisCamera['name'],
                                 'id' => $thisCamera['id'],
                                 'vpn' => $cameraVPN,
+                                'snapshot' => $cameraSnapshot,
                                 'status' => $thisCamera['status'],
                                 'sd_status' => $thisCamera['sd_status'],
                                 'alim_status' => $thisCamera['alim_status'],
+                                'is_local' => $isLocal,
                                 'type' => 'Welcome'
+                                );
+
+                array_push($allCameras, $camera);
+            }
+            elseif ($thisCamera['type'] == 'NDB') //Doorbell:
+            {
+                $camera = array('name' => $thisCamera['name'],
+                                'id' => $thisCamera['id'],
+                                'vpn' => $cameraVPN,
+                                'snapshot' => $cameraSnapshot,
+                                'status' => $thisCamera['status'],
+                                'sd_status' => $thisCamera['sd_status'],
+                                'alim_status' => $thisCamera['alim_status'],
+                                'is_local' => $isLocal,
+                                'type' => 'Doorbell'
                                 );
 
                 array_push($allCameras, $camera);
@@ -667,7 +693,7 @@ class splNetatmoAPI {
                                         'client_secret' => $this->_Netatmo_app_secret,
                                         'username' => $this->_Netatmo_user,
                                         'password' => $this->_Netatmo_pass,
-                                        'scope' => 'read_station read_thermostat write_thermostat read_camera write_camera access_camera read_presence access_presence write_presence read_homecoach'
+                                        'scope' => 'read_home write_home read_camera write_camera access_camera read_presence write_presence access_presence read_doorbell write_doorbell access_doorbell read_station write_station read_thermostat write_thermostat read_smokedetector write_smokedetector read_homecoach write_homecoach read_june write_june access_velux read_velux write_velux read_muller write_muller read_smarther write_smarther read_magellan write_magellan'
                 )
             );
         $opts = array('http' =>
