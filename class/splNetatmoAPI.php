@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.6';
+    public $_APIversion = '1.65';
 
     //user functions======================================================
 
@@ -577,6 +577,8 @@ class splNetatmoAPI {
                                 'alim_status' => $thisCamera['alim_status'],
                                 'light_mode_status' => $thisCamera['light_mode_status'],
                                 'is_local' => $isLocal,
+                                'siren_status' => (isset($thisCamera['siren_status']) ? $thisCamera['siren_status'] : false),
+                                'last_setup' => $thisCamera['last_setup'],
                                 'type' => 'Presence'
                                 );
 
@@ -592,6 +594,7 @@ class splNetatmoAPI {
                                 'sd_status' => $thisCamera['sd_status'],
                                 'alim_status' => $thisCamera['alim_status'],
                                 'is_local' => $isLocal,
+                                'last_setup' => $thisCamera['last_setup'],
                                 'type' => 'Welcome'
                                 );
 
