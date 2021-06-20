@@ -168,6 +168,9 @@ $_splNetatmo->dropWebhook();
 
 ## Changes
 
+#### v1.65 (2021-06-20)
+- report Presence siren status
+
 #### v1.6 (2021-03-07)
 - Support doorbell
 
