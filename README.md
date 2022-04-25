@@ -168,6 +168,10 @@ $_splNetatmo->dropWebhook();
 
 ## Changes
 
+#### v1.7 (2022-04-25)
+- New: setSirenStatus()
+*example: $_splNetatmo->setSirenStatus('MyCam', true);*
+
 #### v1.65 (2021-06-20)
 - report Presence siren status
 

@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.65';
+    public $_APIversion = '1.7';
 
     //user functions======================================================
 
@@ -401,6 +401,8 @@ class splNetatmoAPI {
         if (in_array($mode, array('off', '0', 0, false), true)) $value = 'off';
         if (!isset($value)) return array('error'=>'Unsupported value');
 
+        if ($camera['status'] == $value) return array('error'=>'Camera ever in status '.$value);
+
         $command = '/command/changestatus?status='.$value;
         $url = $camera['vpn'].$command;
 
@@ -426,6 +428,52 @@ class splNetatmoAPI {
 
         $response = file_get_contents($url, false);
 
+        $jsonDatas = json_decode($response, true);
+        return $jsonDatas;
+    }
+
+    public function setSirenStatus($camName, $status=0) //Presence
+    {
+        if ( is_string($camName) ) $camera = $this->getCamByName($camName);
+        if ( isset($camera['error']) ) return $camera;
+
+        if ($camera['type'] != 'Presence') return array('result'=>null, 'error' => 'Unsupported camera for setLightIntensity()');
+
+        $setStatus = false;
+        if ($status == 0 || $status === false) {
+            $setStatus = "no_sound";
+        }
+        if ($status == 1 || $status === true) {
+            $setStatus = "sound";
+        }
+        if (!$setStatus) return array('result'=>null, 'error' => 'Unsupported siren status for setSirenStatus()');
+
+        $url = 'https://app.netatmo.net/syncapi/v1/setstate?access_token='.$this->_accesstoken;
+        $postdata = http_build_query(
+                                    array(
+                                        'home' => array(
+                                            'id' => $this->_homerealID,
+                                            'modules' => array(
+                                                array(
+                                                    'id' => $camera['id'],
+                                                    'siren_status' => $setStatus
+                                                )
+                                            )
+                                        ),
+                                        'app_identifier' => 'app_security'
+                )
+            );
+
+        $opts = array('http' =>
+                            array(
+                                'method'  => 'POST',
+                                'header'  => 'Content-type: application/x-www-form-urlencoded;charset=UTF-8'."\r\n".
+                                            'User-Agent: netatmoclient',
+                                'content' => $postdata
+                )
+            );
+        $context  = stream_context_create($opts);
+        $response = @file_get_contents($url, false, $context);
         $jsonDatas = json_decode($response, true);
         return $jsonDatas;
     }
@@ -521,6 +569,7 @@ class splNetatmoAPI {
         if (isset($jsonDatas['body']['homes'][$this->_homeID]))
         {
             $this->_home = $jsonDatas['body']['homes'][$this->_homeID]['name'];
+            $this->_homerealID = $jsonDatas['body']['homes'][$this->_homeID]['id'];
             if( isset($jsonDatas['body']['homes'][$this->_homeID]['place']['timezone']) ) $this->_timezone = $jsonDatas['body']['homes'][$this->_homeID]['place']['timezone'];
             return $jsonDatas;
         }
@@ -669,6 +718,7 @@ class splNetatmoAPI {
     public $_scope;
     public $error;
     public $_homeID;
+    public $_homerealID;
 
     //devices:
     public $_cameras = []; //both Presences and Welcome
