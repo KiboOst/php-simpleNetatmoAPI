@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '1.7';
+    public $_APIversion = '2.0.0';
 
     //user functions======================================================
 
