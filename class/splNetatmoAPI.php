@@ -715,7 +715,6 @@ class splNetatmoAPI {
     public $_timezone;
 
     //API:
-    public $_scope;
     public $error;
     public $_homeID;
     public $_homerealID;
@@ -729,8 +728,6 @@ class splNetatmoAPI {
     protected $_weatherDatas;
 
     protected $_apiurl = 'https://api.netatmo.net/';
-    protected $_Netatmo_user;
-    protected $_Netatmo_pass;
     protected $_Netatmo_app_id;
     protected $_Netatmo_app_secret;
     protected $_accesstoken;
@@ -741,12 +738,10 @@ class splNetatmoAPI {
         $token_url = $this->_apiurl.'/oauth2/token';
         $postdata = http_build_query(
                                     array(
-                                        'grant_type' => 'password',
+                                        'grant_type' => 'refresh_token',
                                         'client_id' => $this->_Netatmo_app_id,
                                         'client_secret' => $this->_Netatmo_app_secret,
-                                        'username' => $this->_Netatmo_user,
-                                        'password' => $this->_Netatmo_pass,
-                                        'scope' => 'read_home write_home read_camera write_camera access_camera read_presence write_presence access_presence read_doorbell write_doorbell access_doorbell read_station write_station read_thermostat write_thermostat read_smokedetector write_smokedetector read_homecoach write_homecoach read_june write_june access_velux read_velux write_velux read_muller write_muller read_smarther write_smarther read_magellan write_magellan'
+                                        'refresh_token' => $this->_refresh_token
                 )
             );
         $opts = array('http' =>
@@ -774,7 +769,6 @@ class splNetatmoAPI {
         {
             $this->_accesstoken = $jsonDatas['access_token'];
             $this->_refreshtoken = $jsonDatas['refresh_token'];
-            $this->_scope = $jsonDatas['scope'];
             return true;
         }
         else
@@ -786,12 +780,11 @@ class splNetatmoAPI {
         return true;
     }
 
-    function __construct($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret, $homeID=0)
+    function __construct($Netatmo_app_id, $Netatmo_app_secret, $refreshtoken, $homeID=0)
     {
-        $this->_Netatmo_user = $Netatmo_user;
-        $this->_Netatmo_pass = $Netatmo_pass;
         $this->_Netatmo_app_id = $Netatmo_app_id;
         $this->_Netatmo_app_secret = $Netatmo_app_secret;
+        $this->_refresh_token = $refreshtoken;
 
         $this->_homeID = $homeID;
         $var = $this->connect();
