@@ -23,14 +23,23 @@ It does rely on official Netatmo SDK, even if no other resources are needed to g
 
 ## Requirements
 
-- Your Netatmo login and password.
-- Your Netatmo Connect application client_id and client_secret.
-
 If you don't have Netatmo App yet, just create one, it's simple and free:
 
 - Register at https://dev.netatmo.com
 - Create an app at https://dev.netatmo.com/apps/createanapp#form (Enter any name)
 - After successfully created your app, just get client_id and client_secret
+
+In your app, check *Token generator* section: enter all needed scopes, then hit **Generate Token**
+
+Copy **Refresh Token** into refreshtoken.txt file beside your php script. This is extremely important, as for each API initialisation, this refresh token will change, and write back into the file for next calls. Also, this means you can't anymore (December 2023, thanks Netatmo, awkward decision!!) use same app for different scripts locations, or will have to synch this file!
+
+If you need to have this file in different folders you can try that:
+```php
+require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoAPI.php");
+chdir('/path/to/token/'); //for refreshtoken api file path
+$_splNetatmo = new splNetatmoAPI($Netatmo_app_id, $Netatmo_app_secret);
+```
+
 
 <img align="right" src="/readmeAssets/howto.jpg" width="48">
 
@@ -41,14 +50,14 @@ All functions return a json array, you can echo it to see which key to get.
 Initialize:
 ```php
 require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoAPI.php");
-$_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret);
+$_splNetatmo = new splNetatmoAPI($Netatmo_app_id, $Netatmo_app_secret);
 if (isset($_splNetatmo->error)) die($_splNetatmo->error);
 ```
 
 If you have several homes, you can specify a homeID as last argument.
 ```php
 require($_SERVER['DOCUMENT_ROOT']."/path/to/splNetatmoAPI.php");
-$_splNetatmo = new splNetatmoAPI($Netatmo_user, $Netatmo_pass, $Netatmo_app_id, $Netatmo_app_secret, 1);
+$_splNetatmo = new splNetatmoAPI($Netatmo_app_id, $Netatmo_app_secret, 1);
 if (isset($_splNetatmo->error)) die($_splNetatmo->error);
 
 //You can also check homes configured on your account to connect to the right one
@@ -167,6 +176,9 @@ $_splNetatmo->dropWebhook();
 <img align="right" src="/readmeAssets/changes.jpg" width="48">
 
 ## Changes
+
+#### v3.0 (2023-05-12)
+- Fix: refresh token to file, thanks to stupid Netatmo decision! See **Requirements**
 
 #### v1.7 (2022-04-25)
 - New: setSirenStatus()
