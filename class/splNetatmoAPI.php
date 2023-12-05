@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '2.0.0';
+    public $_APIversion = '3.0.0';
 
     //user functions======================================================
 
@@ -730,8 +730,10 @@ class splNetatmoAPI {
     protected $_apiurl = 'https://api.netatmo.net/';
     protected $_Netatmo_app_id;
     protected $_Netatmo_app_secret;
-    protected $_accesstoken;
-    protected $_refreshtoken;
+    public $_accesstoken;
+    public $_refreshtoken;
+
+    protected $tokenFilePath = 'refreshtoken.txt';
 
     public function connect()
     {
@@ -765,10 +767,11 @@ class splNetatmoAPI {
             }
         }
         $jsonDatas = json_decode($response, true);
-        if (isset($jsonDatas['access_token']))
+        if (isset($jsonDatas['refresh_token']))
         {
-            $this->_accesstoken = $jsonDatas['access_token'];
+            file_put_contents($this->tokenFilePath, $jsonDatas['refresh_token']);
             $this->_refreshtoken = $jsonDatas['refresh_token'];
+            $this->_accesstoken = $jsonDatas['access_token'];
             return true;
         }
         else
@@ -780,11 +783,19 @@ class splNetatmoAPI {
         return true;
     }
 
-    function __construct($Netatmo_app_id, $Netatmo_app_secret, $refreshtoken, $homeID=0)
+    function __construct($Netatmo_app_id, $Netatmo_app_secret, $homeID=0)
     {
         $this->_Netatmo_app_id = $Netatmo_app_id;
         $this->_Netatmo_app_secret = $Netatmo_app_secret;
-        $this->_refresh_token = $refreshtoken;
+
+        if (file_exists($this->tokenFilePath)) {
+            $this->_refresh_token = file_get_contents($this->tokenFilePath);
+        }
+        else
+        {
+            $this->error = "No refreshtoken file.";
+            return false;
+        }
 
         $this->_homeID = $homeID;
         $var = $this->connect();
