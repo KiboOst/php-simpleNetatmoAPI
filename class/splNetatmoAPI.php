@@ -769,7 +769,7 @@ class splNetatmoAPI {
         $jsonDatas = json_decode($response, true);
         if (isset($jsonDatas['refresh_token']))
         {
-            file_put_contents($this->tokenFilePath, $jsonDatas['refresh_token']);
+            if ($jsonDatas['refresh_token'] != $this->_refresh_token) file_put_contents($this->tokenFilePath, $jsonDatas['refresh_token']);
             $this->_refreshtoken = $jsonDatas['refresh_token'];
             $this->_accesstoken = $jsonDatas['access_token'];
             return true;
