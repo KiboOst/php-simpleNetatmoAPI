@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '3.0.0';
+    public $_APIversion = '3.1.0';
 
     //user functions======================================================
 
@@ -583,7 +583,7 @@ class splNetatmoAPI {
 
     protected function getWeatherDatas() //request full weather datas
     {
-        $api_url = 'https://api.netatmo.net/api/getstationsdata?access_token=' . $this->_accesstoken;
+        $api_url = 'https://api.netatmo.com/api/getstationsdata?access_token=' . $this->_accesstoken;
         $response = file_get_contents($api_url, false);
         $jsonDatas = json_decode($response, true);
         $this->_weatherDatas = $jsonDatas;
@@ -727,7 +727,7 @@ class splNetatmoAPI {
     protected $_camerasDatas;
     protected $_weatherDatas;
 
-    protected $_apiurl = 'https://api.netatmo.net/';
+    protected $_apiurl = 'https://api.netatmo.com/';
     protected $_Netatmo_app_id;
     protected $_Netatmo_app_secret;
     public $_accesstoken;
