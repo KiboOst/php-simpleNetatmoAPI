@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '3.2.0';
+    public $_APIversion = '3.2.1';
 
     //user functions======================================================
 
@@ -68,6 +68,30 @@ class splNetatmoAPI {
         }
         //add main station:
         $jsonDatas[ $this->_weatherDatas['body']['devices'][0]['station_name'] ] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['Humidity'];
+        return $jsonDatas;
+    }
+
+    public function getWeatherPressure()
+    {
+        if (is_null($this->_weatherDatas)) $this->getWeatherDatas();
+
+        $modules = $this->_weatherDatas['body']['devices'][0]['modules'];
+
+        $jsonDatas = array();
+        foreach ($modules as $module)
+        {
+            if (!isset($module['dashboard_data']['Pressure'])) continue;
+
+            $name = $module['module_name'];
+            $humidity = $module['dashboard_data']['Pressure'];
+            $jsonDatas[$name] = $humidity;
+        }
+        //add main station, NAMain should be only one to get pressure:
+        $stationName = $this->_weatherDatas['body']['devices'][0]['station_name'];
+        $jsonDatas[$stationName] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['Pressure'];
+        $jsonDatas['AbsolutePressure'] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['AbsolutePressure'];
+        $jsonDatas['Pressure_trend'] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['pressure_trend'];
+
         return $jsonDatas;
     }
 
@@ -627,8 +651,14 @@ class splNetatmoAPI {
         $api_url = 'https://api.netatmo.com/api/getstationsdata?access_token=' . $this->_accesstoken;
         $response = file_get_contents($api_url, false);
         $jsonDatas = json_decode($response, true);
-        $this->_weatherDatas = $jsonDatas;
+
         if( isset($jsonDatas['body']['devices'][$this->_homeID]['place']['timezone']) ) $this->_timezone = $jsonDatas['body']['devices'][$this->_homeID]['place']['timezone'];
+
+        $station = $this->_weatherDatas['body']['devices'][0];
+        if (isset($station['dashboard_data']['Pressure'])) {
+            $jsonDatas[$station['station_name']] = $station['dashboard_data']['Pressure'];
+        }
+        $this->_weatherDatas = $jsonDatas;
         return $jsonDatas;
     }
 

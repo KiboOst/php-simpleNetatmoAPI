@@ -78,6 +78,12 @@ $getWeatherTemperatures = $_splNetatmo->getWeatherTemperatures();
 echo "<pre>getWeatherTemperatures:<br>".json_encode($getWeatherTemperatures, JSON_PRETTY_PRINT)."</pre><br>";
 echo $getWeatherTemperatures['Exterieur'];
 
+$getWeatherHumidity = $_splNetatmo->getWeatherHumidity();
+echo "<pre>getWeatherHumidity:<br>".json_encode($getWeatherHumidity, JSON_PRETTY_PRINT)."</pre><br>";
+
+$getWeatherCO2 = $_splNetatmo->getWeatherCO2();
+echo "<pre>getWeatherCO2:<br>".json_encode($getWeatherCO2, JSON_PRETTY_PRINT)."</pre><br>";
+
 //get all modules batteries:
 //If you specify a number under 100, it will return only modules under this number so you can get low batteries modules.
 $getWeatherBatteries = $_splNetatmo->getWeatherBatteries();
