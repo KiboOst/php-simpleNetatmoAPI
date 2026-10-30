@@ -7,7 +7,7 @@ https://github.com/KiboOst/php-simpleNetatmoAPI
 
 class splNetatmoAPI {
 
-    public $_APIversion = '3.1.0';
+    public $_APIversion = '3.2.0';
 
     //user functions======================================================
 
@@ -48,6 +48,47 @@ class splNetatmoAPI {
         }
         //add main station:
         $jsonDatas[ $this->_weatherDatas['body']['devices'][0]['station_name'] ] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['Temperature'];
+        return $jsonDatas;
+    }
+
+    public function getWeatherHumidity()
+    {
+        if (is_null($this->_weatherDatas)) $this->getWeatherDatas();
+
+        $modules = $this->_weatherDatas['body']['devices'][0]['modules'];
+
+        $jsonDatas = array();
+        foreach ($modules as $module)
+        {
+            if (!isset($module['dashboard_data']['Humidity'])) continue;
+
+            $name = $module['module_name'];
+            $humidity = $module['dashboard_data']['Humidity'];
+            $jsonDatas[$name] = $humidity;
+        }
+        //add main station:
+        $jsonDatas[ $this->_weatherDatas['body']['devices'][0]['station_name'] ] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['Humidity'];
+        return $jsonDatas;
+    }
+
+    public function getWeatherCO2()
+    {
+        if (is_null($this->_weatherDatas)) $this->getWeatherDatas();
+
+        $modules = $this->_weatherDatas['body']['devices'][0]['modules'];
+
+        $jsonDatas = array();
+        foreach ($modules as $module)
+        {
+            if (!isset($module['dashboard_data']['CO2'])) continue;
+
+            $name = $module['module_name'];
+            $co2 = $module['dashboard_data']['CO2'];
+            $jsonDatas[$name] = $co2;
+        }
+        //add main station:
+        $jsonDatas[ $this->_weatherDatas['body']['devices'][0]['station_name'] ] = $this->_weatherDatas['body']['devices'][0]['dashboard_data']['CO2'];
+
         return $jsonDatas;
     }
 
@@ -628,7 +669,8 @@ class splNetatmoAPI {
                                 'is_local' => $isLocal,
                                 'siren_status' => (isset($thisCamera['siren_status']) ? $thisCamera['siren_status'] : false),
                                 'last_setup' => $thisCamera['last_setup'],
-                                'type' => 'Presence'
+                                'type' => 'Presence',
+                                'NAtype' => $thisCamera['type']
                                 );
 
                 array_push($allCameras, $camera);
@@ -644,7 +686,8 @@ class splNetatmoAPI {
                                 'alim_status' => $thisCamera['alim_status'],
                                 'is_local' => $isLocal,
                                 'last_setup' => $thisCamera['last_setup'],
-                                'type' => 'Welcome'
+                                'type' => 'Welcome',
+                                'NAtype' => $thisCamera['type']
                                 );
 
                 array_push($allCameras, $camera);
@@ -659,7 +702,40 @@ class splNetatmoAPI {
                                 'sd_status' => $thisCamera['sd_status'],
                                 'alim_status' => $thisCamera['alim_status'],
                                 'is_local' => $isLocal,
-                                'type' => 'Doorbell'
+                                'type' => 'Doorbell',
+                                'NAtype' => $thisCamera['type']
+                                );
+
+                array_push($allCameras, $camera);
+            }
+            elseif ($thisCamera['type'] == 'NPC') //Interior Advance:
+            {
+                $camera = array('name' => $thisCamera['name'],
+                                'id' => $thisCamera['id'],
+                                'vpn' => $cameraVPN,
+                                'snapshot' => $cameraSnapshot,
+                                'status' => $thisCamera['status'],
+                                'sd_status' => $thisCamera['sd_status'],
+                                'alim_status' => $thisCamera['alim_status'],
+                                'is_local' => $isLocal,
+                                'type' => 'Advance',
+                                'NAtype' => $thisCamera['type']
+                                );
+
+                array_push($allCameras, $camera);
+            }
+            else //so ?
+            {
+                $camera = array('name' => $thisCamera['name'],
+                                'id' => $thisCamera['id'],
+                                'vpn' => $cameraVPN,
+                                'snapshot' => $cameraSnapshot,
+                                'status' => $thisCamera['status'],
+                                'sd_status' => $thisCamera['sd_status'],
+                                'alim_status' => $thisCamera['alim_status'],
+                                'is_local' => $isLocal,
+                                'type' => 'Unknown',
+                                'NAtype' => $thisCamera['type']
                                 );
 
                 array_push($allCameras, $camera);
@@ -733,7 +809,7 @@ class splNetatmoAPI {
     public $_accesstoken;
     public $_refreshtoken;
 
-    protected $tokenFilePath = 'refreshtoken.txt';
+    protected $tokenFilePath = 'refreshtoken.json';
 
     public function connect()
     {
@@ -762,14 +838,24 @@ class splNetatmoAPI {
         if ($response === false) {
             $response = @file_get_contents($token_url, false, $context);
             if ($response === false) {
-                $this->error = "Can't connect to Netatmo Server.";
+                $tokens = json_decode(file_get_contents($this->tokenFilePath), true);
+                if (time() > $tokens['expires_at']) {
+                    $this->error = "Token is expired. Use token generator at dev.netatmo.com";
+                } else {
+                    $this->error = "Can't connect to Netatmo Server.";
+                }
                 return false;
             }
         }
         $jsonDatas = json_decode($response, true);
         if (isset($jsonDatas['refresh_token']))
         {
-            file_put_contents($this->tokenFilePath, $jsonDatas['refresh_token']);
+            $tokens = array(
+                'access_token'  => $jsonDatas['access_token'],
+                'refresh_token' => $jsonDatas['refresh_token'],
+                'expires_at'    => strtotime(date('d.m.Y H:i')) + $jsonDatas['expires_in']
+            );
+            file_put_contents($this->tokenFilePath, json_encode($tokens, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT));
             $this->_refreshtoken = $jsonDatas['refresh_token'];
             $this->_accesstoken = $jsonDatas['access_token'];
             return true;
@@ -779,8 +865,6 @@ class splNetatmoAPI {
             $this->error = "Can't get Netatmo token.";
             return false;
         }
-
-        return true;
     }
 
     function __construct($Netatmo_app_id, $Netatmo_app_secret, $homeID=0)
@@ -789,7 +873,9 @@ class splNetatmoAPI {
         $this->_Netatmo_app_secret = $Netatmo_app_secret;
 
         if (file_exists($this->tokenFilePath)) {
-            $this->_refresh_token = file_get_contents($this->tokenFilePath);
+            $tokens = json_decode(file_get_contents($this->tokenFilePath), true);
+            $this->_refresh_token = $tokens['refresh_token'];
+            $this->_accesstoken = $tokens['access_token'];
         }
         else
         {
@@ -798,7 +884,12 @@ class splNetatmoAPI {
         }
 
         $this->_homeID = $homeID;
-        $var = $this->connect();
+        if (isset($tokens['expires_at']) && time() < $tokens['expires_at']) {
+            $var = true;
+        }
+        else {
+            $var = $this->connect();
+        }
         if ($var == true)
         {
             $this->getWeatherDatas();
